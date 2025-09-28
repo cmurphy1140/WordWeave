@@ -1,0 +1,558 @@
+# CloudFormation template for WordWeave Production Monitoring and Alerting
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'WordWeave Production Monitoring, Alerting, and Dashboard Setup'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+    Description: Environment name
+
+  AlertingEmail:
+    Type: String
+    Default: alerts@wordweave.app
+    Description: Email address for alert notifications
+
+  SlackWebhookUrl:
+    Type: String
+    Default: ''
+    Description: Slack webhook URL for notifications (optional)
+
+Resources:
+  # SNS Topic for alerts
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'wordweave-alerts-${Environment}'
+      DisplayName: 'WordWeave Production Alerts'
+      KmsMasterKeyId: alias/aws/sns
+
+  # Email subscription for alerts
+  EmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref AlertTopic
+      Protocol: email
+      Endpoint: !Ref AlertingEmail
+
+  # Lambda function for Slack notifications
+  SlackNotificationFunction:
+    Type: AWS::Lambda::Function
+    Condition: HasSlackWebhook
+    Properties:
+      FunctionName: !Sub 'wordweave-slack-notifications-${Environment}'
+      Runtime: python3.11
+      Handler: index.lambda_handler
+      Timeout: 30
+      MemorySize: 128
+      Role: !GetAtt SlackNotificationRole.Arn
+      Environment:
+        Variables:
+          SLACK_WEBHOOK_URL: !Ref SlackWebhookUrl
+      Code:
+        ZipFile: |
+          import json
+          import urllib3
+          import os
+
+          def lambda_handler(event, context):
+              webhook_url = os.environ['SLACK_WEBHOOK_URL']
+
+              for record in event['Records']:
+                  message = json.loads(record['Sns']['Message'])
+
+                  # Parse CloudWatch alarm
+                  alarm_name = message.get('AlarmName', 'Unknown')
+                  new_state = message.get('NewStateValue', 'Unknown')
+                  reason = message.get('NewStateReason', 'No reason provided')
+
+                  # Determine color based on state
+                  color = {
+                      'ALARM': 'danger',
+                      'OK': 'good',
+                      'INSUFFICIENT_DATA': 'warning'
+                  }.get(new_state, 'warning')
+
+                  # Create Slack message
+                  slack_message = {
+                      'attachments': [{
+                          'color': color,
+                          'title': f'WordWeave Alert: {alarm_name}',
+                          'text': reason,
+                          'fields': [
+                              {
+                                  'title': 'State',
+                                  'value': new_state,
+                                  'short': True
+                              },
+                              {
+                                  'title': 'Environment',
+                                  'value': 'Production',
+                                  'short': True
+                              }
+                          ],
+                          'footer': 'WordWeave Monitoring',
+                          'ts': int(message.get('StateChangeTime', '').replace('T', ' ').replace('Z', ''))
+                      }]
+                  }
+
+                  # Send to Slack
+                  http = urllib3.PoolManager()
+                  response = http.request(
+                      'POST',
+                      webhook_url,
+                      body=json.dumps(slack_message),
+                      headers={'Content-Type': 'application/json'}
+                  )
+
+              return {'statusCode': 200}
+
+  # IAM role for Slack notification Lambda
+  SlackNotificationRole:
+    Type: AWS::IAM::Role
+    Condition: HasSlackWebhook
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  # SNS subscription for Slack notifications
+  SlackSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasSlackWebhook
+    Properties:
+      TopicArn: !Ref AlertTopic
+      Protocol: lambda
+      Endpoint: !GetAtt SlackNotificationFunction.Arn
+
+  # Permission for SNS to invoke Lambda
+  SlackLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Condition: HasSlackWebhook
+    Properties:
+      FunctionName: !Ref SlackNotificationFunction
+      Action: lambda:InvokeFunction
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref AlertTopic
+
+  # Backend Lambda Function Alarms
+  PoemGeneratorHighErrorRate:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-PoemGenerator-HighErrorRate-${Environment}'
+      AlarmDescription: 'High error rate for poem generator Lambda'
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub 'wordweave-poem-generator-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+      OKActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  PoemGeneratorHighDuration:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-PoemGenerator-HighDuration-${Environment}'
+      AlarmDescription: 'High duration for poem generator Lambda'
+      MetricName: Duration
+      Namespace: AWS/Lambda
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 25000
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub 'wordweave-poem-generator-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  PoemGeneratorThrottles:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-PoemGenerator-Throttles-${Environment}'
+      AlarmDescription: 'Throttles detected for poem generator Lambda'
+      MetricName: Throttles
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub 'wordweave-poem-generator-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  ThemeAnalyzerHighErrorRate:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-ThemeAnalyzer-HighErrorRate-${Environment}'
+      AlarmDescription: 'High error rate for theme analyzer Lambda'
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub 'wordweave-theme-analyzer-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+      OKActions:
+        - !Ref AlertTopic
+
+  # API Gateway Alarms
+  ApiGatewayHighErrorRate:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-ApiGateway-HighErrorRate-${Environment}'
+      AlarmDescription: 'High 4XX/5XX error rate for API Gateway'
+      MetricName: 4XXError
+      Namespace: AWS/ApiGateway
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 50
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ApiName
+          Value: !Sub 'wordweave-api-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  ApiGatewayHighLatency:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-ApiGateway-HighLatency-${Environment}'
+      AlarmDescription: 'High latency for API Gateway'
+      MetricName: Latency
+      Namespace: AWS/ApiGateway
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 3
+      Threshold: 5000
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ApiName
+          Value: !Sub 'wordweave-api-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  # DynamoDB Alarms
+  DynamoDBHighReadThrottle:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-DynamoDB-HighReadThrottle-${Environment}'
+      AlarmDescription: 'High read throttles for DynamoDB tables'
+      MetricName: ReadThrottles
+      Namespace: AWS/DynamoDB
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: TableName
+          Value: !Sub 'wordweave-poems-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  DynamoDBHighWriteThrottle:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-DynamoDB-HighWriteThrottle-${Environment}'
+      AlarmDescription: 'High write throttles for DynamoDB tables'
+      MetricName: WriteThrottles
+      Namespace: AWS/DynamoDB
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: TableName
+          Value: !Sub 'wordweave-poems-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  # CloudFront Alarms
+  CloudFrontHighErrorRate:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-CloudFront-HighErrorRate-${Environment}'
+      AlarmDescription: 'High error rate for CloudFront distribution'
+      MetricName: 4xxErrorRate
+      Namespace: AWS/CloudFront
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+
+  CloudFrontLowCacheHitRate:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-CloudFront-LowCacheHitRate-${Environment}'
+      AlarmDescription: 'Low cache hit rate for CloudFront distribution'
+      MetricName: CacheHitRate
+      Namespace: AWS/CloudFront
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 3
+      Threshold: 80
+      ComparisonOperator: LessThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+
+  # Business Metrics Alarms
+  LowPoemGenerationRate:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-Business-LowPoemGeneration-${Environment}'
+      AlarmDescription: 'Unusually low poem generation rate'
+      MetricName: PoemGenerated
+      Namespace: WordWeave/Production
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 2
+      Threshold: 10
+      ComparisonOperator: LessThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: breaching
+
+  # Cost Alarms
+  HighDailyCost:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-Cost-HighDailyCost-${Environment}'
+      AlarmDescription: 'Daily AWS costs exceed threshold'
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 200
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Currency
+          Value: USD
+      AlarmActions:
+        - !Ref AlertTopic
+
+  # Composite Alarm for System Health
+  SystemHealthAlarm:
+    Type: AWS::CloudWatch::CompositeAlarm
+    Properties:
+      AlarmName: !Sub 'WordWeave-SystemHealth-${Environment}'
+      AlarmDescription: 'Overall system health composite alarm'
+      AlarmRule: !Sub |
+        ALARM(${PoemGeneratorHighErrorRate}) OR
+        ALARM(${ThemeAnalyzerHighErrorRate}) OR
+        ALARM(${ApiGatewayHighErrorRate}) OR
+        ALARM(${DynamoDBHighReadThrottle}) OR
+        ALARM(${CloudFrontHighErrorRate})
+      AlarmActions:
+        - !Ref AlertTopic
+      OKActions:
+        - !Ref AlertTopic
+
+  # Custom Metrics Dashboard
+  ProductionDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub 'WordWeave-Production-Complete-${Environment}'
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/Lambda", "Invocations", "FunctionName", "wordweave-poem-generator-${Environment}", { "stat": "Sum" } ],
+                  [ ".", "Errors", ".", ".", { "stat": "Sum" } ],
+                  [ ".", "Duration", ".", ".", { "stat": "Average" } ]
+                ],
+                "period": 300,
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "title": "Poem Generator Performance",
+                "yAxis": {
+                  "left": {
+                    "min": 0
+                  }
+                }
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/Lambda", "Invocations", "FunctionName", "wordweave-theme-analyzer-${Environment}", { "stat": "Sum" } ],
+                  [ ".", "Errors", ".", ".", { "stat": "Sum" } ],
+                  [ ".", "Duration", ".", ".", { "stat": "Average" } ]
+                ],
+                "period": 300,
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "title": "Theme Analyzer Performance"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 6,
+              "width": 8,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "WordWeave/Production", "PoemGenerated", { "stat": "Sum" } ],
+                  [ ".", "ThemeAnalyzed", { "stat": "Sum" } ],
+                  [ ".", "UserRequest", { "stat": "Sum" } ]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "region": "${AWS::Region}",
+                "title": "Business Metrics"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 8,
+              "y": 6,
+              "width": 8,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/ApiGateway", "Count", "ApiName", "wordweave-api-${Environment}" ],
+                  [ ".", "4XXError", ".", "." ],
+                  [ ".", "5XXError", ".", "." ],
+                  [ ".", "Latency", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "region": "${AWS::Region}",
+                "title": "API Gateway Metrics"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 16,
+              "y": 6,
+              "width": 8,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/CloudFront", "Requests", "DistributionId", "DISTRIBUTION_ID_PLACEHOLDER" ],
+                  [ ".", "4xxErrorRate", ".", "." ],
+                  [ ".", "5xxErrorRate", ".", "." ],
+                  [ ".", "CacheHitRate", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Average",
+                "region": "us-east-1",
+                "title": "CloudFront Performance"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 12,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/DynamoDB", "ConsumedReadCapacityUnits", "TableName", "wordweave-poems-${Environment}" ],
+                  [ ".", "ConsumedWriteCapacityUnits", ".", "." ],
+                  [ ".", "ConsumedReadCapacityUnits", "TableName", "wordweave-themes-${Environment}" ],
+                  [ ".", "ConsumedWriteCapacityUnits", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "region": "${AWS::Region}",
+                "title": "DynamoDB Capacity Units"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 12,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/Billing", "EstimatedCharges", "Currency", "USD", { "stat": "Maximum" } ]
+                ],
+                "period": 86400,
+                "stat": "Maximum",
+                "region": "us-east-1",
+                "title": "Daily Estimated Costs"
+              }
+            },
+            {
+              "type": "log",
+              "x": 0,
+              "y": 18,
+              "width": 24,
+              "height": 6,
+              "properties": {
+                "query": "SOURCE '/aws/lambda/wordweave-poem-generator-${Environment}'\n| fields @timestamp, @message\n| filter @message like /ERROR/\n| sort @timestamp desc\n| limit 100",
+                "region": "${AWS::Region}",
+                "title": "Recent Errors",
+                "view": "table"
+              }
+            }
+          ]
+        }
+
+Conditions:
+  HasSlackWebhook: !Not [!Equals [!Ref SlackWebhookUrl, '']]
+
+Outputs:
+  AlertTopicArn:
+    Description: SNS Topic ARN for alerts
+    Value: !Ref AlertTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-AlertTopic'
+
+  DashboardUrl:
+    Description: CloudWatch Dashboard URL
+    Value: !Sub 'https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=WordWeave-Production-Complete-${Environment}'
+    Export:
+      Name: !Sub '${AWS::StackName}-Dashboard'
+
+  SystemHealthAlarm:
+    Description: System health composite alarm
+    Value: !Ref SystemHealthAlarm
+    Export:
+      Name: !Sub '${AWS::StackName}-SystemHealth'

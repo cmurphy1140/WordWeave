@@ -1,0 +1,591 @@
+/**
+ * WordWeave Micro-Interactions CSS Library
+ * 
+ * CSS-only implementations of poetry-themed micro-interactions
+ * for browsers that don't support JavaScript animations
+ */
+
+/* ============================================================================
+   BUTTON INTERACTIONS
+   ============================================================================ */
+
+/* Generate Button: Ripple Effect */
+.generate-button {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease-out;
+}
+
+.generate-button:hover {
+  transform: scale(1.05);
+}
+
+.generate-button:active {
+  transform: scale(0.95);
+}
+
+.generate-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.8s ease-out, height 0.8s ease-out;
+}
+
+.generate-button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Floating Words Animation */
+@keyframes floatWords {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+}
+
+.floating-word {
+  position: absolute;
+  pointer-events: none;
+  animation: floatWords 1.2s ease-out forwards;
+}
+
+.floating-word:nth-child(1) { animation-delay: 0.1s; }
+.floating-word:nth-child(2) { animation-delay: 0.2s; }
+.floating-word:nth-child(3) { animation-delay: 0.3s; }
+.floating-word:nth-child(4) { animation-delay: 0.4s; }
+
+/* Share Button: Particle Explosion */
+.share-button {
+  position: relative;
+  transition: transform 0.3s ease-out;
+}
+
+.share-button:hover {
+  transform: scale(1.08);
+}
+
+.share-button:active {
+  transform: scale(0.92);
+}
+
+@keyframes particleExplode {
+  0% {
+    opacity: 0;
+    transform: scale(0) translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) translate(var(--particle-x), var(--particle-y));
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translate(var(--particle-x), var(--particle-y));
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: particleExplode 0.6s ease-out forwards;
+}
+
+.particle:nth-child(1) { --particle-x: 30px; --particle-y: -30px; animation-delay: 0s; }
+.particle:nth-child(2) { --particle-x: -30px; --particle-y: -30px; animation-delay: 0.05s; }
+.particle:nth-child(3) { --particle-x: 30px; --particle-y: 30px; animation-delay: 0.1s; }
+.particle:nth-child(4) { --particle-x: -30px; --particle-y: 30px; animation-delay: 0.15s; }
+.particle:nth-child(5) { --particle-x: 0px; --particle-y: -40px; animation-delay: 0.2s; }
+.particle:nth-child(6) { --particle-x: 0px; --particle-y: 40px; animation-delay: 0.25s; }
+
+/* Save Button: Heart Fill */
+.save-button {
+  position: relative;
+  transition: transform 0.2s ease-out;
+}
+
+.save-button:hover {
+  transform: scale(1.1);
+}
+
+.save-button:active {
+  transform: scale(0.9);
+}
+
+@keyframes heartFill {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.heart-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary));
+  border-radius: inherit;
+  animation: heartFill 0.5s ease-out forwards;
+}
+
+/* Remix Button: Swirl Effect */
+.remix-button {
+  position: relative;
+  transition: transform 0.3s ease-out;
+}
+
+.remix-button:hover {
+  transform: scale(1.06) rotate(5deg);
+}
+
+.remix-button:active {
+  transform: scale(0.94) rotate(-5deg);
+}
+
+@keyframes swirl {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.swirl-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: swirl 1.5s ease-in-out infinite;
+}
+
+/* ============================================================================
+   FEEDBACK ANIMATIONS
+   ============================================================================ */
+
+/* Success: Sparkles */
+@keyframes sparkleCascade {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+}
+
+@keyframes sparkleRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+  animation: sparkleCascade 1.5s ease-out forwards, sparkleRotate 1.5s linear forwards;
+}
+
+.sparkle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.sparkle:nth-child(2) { top: 20%; left: 50%; animation-delay: 0.1s; }
+.sparkle:nth-child(3) { top: 30%; left: 80%; animation-delay: 0.2s; }
+.sparkle:nth-child(4) { top: 40%; left: 30%; animation-delay: 0.3s; }
+.sparkle:nth-child(5) { top: 50%; left: 70%; animation-delay: 0.4s; }
+
+/* Error: Shake with Poetry Line */
+@keyframes gentleShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes drawLine {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.error-shake {
+  animation: gentleShake 0.4s ease-in-out;
+}
+
+.poetry-line {
+  position: relative;
+}
+
+.poetry-line::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ff4444, #cc0000);
+  transform-origin: left;
+  animation: drawLine 0.6s ease-out forwards;
+}
+
+/* Loading: Typing Cursor */
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes typingMove {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(10px); }
+  50% { transform: translateX(20px); }
+  75% { transform: translateX(30px); }
+  100% { transform: translateX(40px); }
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: currentColor;
+  animation: cursorBlink 1s infinite, typingMove 2s infinite linear;
+}
+
+/* Processing: Inkblot Morphing */
+@keyframes inkblotMorph {
+  0% {
+    transform: scale(0);
+    border-radius: 50%;
+    opacity: 0;
+  }
+  25% {
+    transform: scale(1);
+    border-radius: 30%;
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(0.8);
+    border-radius: 70%;
+    opacity: 0.8;
+  }
+  75% {
+    transform: scale(1.2);
+    border-radius: 40%;
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 50%;
+    opacity: 0;
+  }
+}
+
+.inkblot {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, transparent 70%);
+  animation: inkblotMorph 3s ease-in-out infinite;
+}
+
+.inkblot:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+.inkblot:nth-child(2) { top: 60%; left: 60%; animation-delay: 1s; }
+.inkblot:nth-child(3) { top: 40%; left: 80%; animation-delay: 2s; }
+
+/* ============================================================================
+   HOVER EFFECTS
+   ============================================================================ */
+
+/* Words: Float with Shadow Lift */
+.word-hover {
+  transition: transform 0.3s ease-out, filter 0.3s ease-out;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.word-hover:hover {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+}
+
+/* Cards: Tilt with Gradient Shift */
+.card-hover {
+  transition: transform 0.3s ease-out, background 0.3s ease-out;
+  transform-style: preserve-3d;
+}
+
+.card-hover:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02);
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+}
+
+/* Links: Pen Stroke Underline */
+.link-hover {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease-out;
+}
+
+.link-hover:hover::after {
+  width: 100%;
+}
+
+/* Images: Ken Burns Effect */
+.image-hover {
+  transition: transform 0.4s ease-out, filter 0.4s ease-out;
+  overflow: hidden;
+}
+
+.image-hover:hover {
+  transform: scale(1.05);
+  filter: blur(1px);
+}
+
+.image-hover img {
+  transition: transform 0.4s ease-out;
+}
+
+.image-hover:hover img {
+  transform: scale(1.1);
+}
+
+/* ============================================================================
+   TRANSITION CHOREOGRAPHY
+   ============================================================================ */
+
+/* Waterfall Entrance */
+@keyframes waterfallEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.waterfall-item {
+  animation: waterfallEntrance 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.waterfall-item:nth-child(1) { animation-delay: 0s; }
+.waterfall-item:nth-child(2) { animation-delay: 0.05s; }
+.waterfall-item:nth-child(3) { animation-delay: 0.1s; }
+.waterfall-item:nth-child(4) { animation-delay: 0.15s; }
+.waterfall-item:nth-child(5) { animation-delay: 0.2s; }
+.waterfall-item:nth-child(6) { animation-delay: 0.25s; }
+.waterfall-item:nth-child(7) { animation-delay: 0.3s; }
+.waterfall-item:nth-child(8) { animation-delay: 0.35s; }
+.waterfall-item:nth-child(9) { animation-delay: 0.4s; }
+.waterfall-item:nth-child(10) { animation-delay: 0.45s; }
+
+/* Exit Animations */
+@keyframes fadeScaleExit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+.exit-animation {
+  animation: fadeScaleExit 0.3s ease-in forwards;
+}
+
+/* State Change Morphing */
+@keyframes stateMorph {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.state-change {
+  animation: stateMorph 0.4s ease-out forwards;
+}
+
+/* Page Curl Transition */
+@keyframes pageCurlExit {
+  0% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(-90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pageCurlEnter {
+  0% {
+    transform: rotateY(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+.page-curl-exit {
+  animation: pageCurlExit 0.6s ease-in forwards;
+}
+
+.page-curl-enter {
+  animation: pageCurlEnter 0.6s ease-out forwards;
+}
+
+/* ============================================================================
+   RESPONSIVE ADAPTATIONS
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .generate-button:hover,
+  .share-button:hover,
+  .save-button:hover,
+  .remix-button:hover {
+    transform: scale(1.02);
+  }
+  
+  .card-hover:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(2deg) scale(1.01);
+  }
+  
+  .word-hover:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ============================================================================
+   THEME INTEGRATION
+   ============================================================================ */
+
+:root {
+  --theme-primary: #2d5a3d;
+  --theme-secondary: #4a7c59;
+  --theme-accent: #7aa874;
+  --theme-background: #1a3d2e;
+  --theme-text: #ffffff;
+}
+
+[data-theme="mystical"] {
+  --theme-primary: #6b46c1;
+  --theme-secondary: #8b5cf6;
+  --theme-accent: #a78bfa;
+  --theme-background: #1e1b4b;
+}
+
+[data-theme="energetic"] {
+  --theme-primary: #dc2626;
+  --theme-secondary: #ef4444;
+  --theme-accent: #f87171;
+  --theme-background: #7f1d1d;
+}
+
+[data-theme="calm"] {
+  --theme-primary: #0ea5e9;
+  --theme-secondary: #38bdf8;
+  --theme-accent: #7dd3fc;
+  --theme-background: #0c4a6e;
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+.micro-interaction-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.micro-interaction-trigger {
+  cursor: pointer;
+  user-select: none;
+}
+
+.micro-interaction-disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.micro-interaction-loading {
+  pointer-events: none;
+}
+
+/* Performance optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.smooth-transitions {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}

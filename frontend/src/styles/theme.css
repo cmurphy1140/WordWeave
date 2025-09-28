@@ -1,0 +1,419 @@
+/* WordWeave Dynamic Theme Engine CSS
+ * This file contains all CSS custom properties and theme-aware styling
+ * Updated by ThemeContext based on poem analysis
+ */
+
+:root {
+  /* Base Color System - Updated by theme analysis */
+  --primary-color: #6b7280;
+  --secondary-color: #9ca3af;
+  --tertiary-color: #d1d5db;
+  --quaternary-color: #f3f4f6;
+  --quinary-color: #ffffff;
+  
+  /* Theme-aware color palette (5 colors from analysis) */
+  --theme-color-1: var(--primary-color);
+  --theme-color-2: var(--secondary-color);
+  --theme-color-3: var(--tertiary-color);
+  --theme-color-4: var(--quaternary-color);
+  --theme-color-5: var(--quinary-color);
+  
+  /* Semantic color assignments */
+  --theme-primary: var(--theme-color-1);
+  --theme-secondary: var(--theme-color-2);
+  --theme-accent: var(--theme-color-3);
+  --theme-neutral: var(--theme-color-4);
+  --theme-highlight: var(--theme-color-5);
+  
+  /* Color weights (from theme analysis) */
+  --theme-primary-weight: 0.8;
+  --theme-secondary-weight: 0.6;
+  --theme-accent-weight: 0.5;
+  --theme-neutral-weight: 0.3;
+  --theme-highlight-weight: 0.2;
+  
+  /* Complex gradients based on mood and analysis */
+  --bg-gradient: linear-gradient(135deg, 
+    var(--theme-primary) 0%, 
+    var(--theme-secondary) 25%, 
+    var(--theme-accent) 50%, 
+    var(--theme-neutral) 75%, 
+    var(--theme-highlight) 100%
+  );
+  
+  /* Mood-specific gradient overlays */
+  --mood-gradient-calm: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.1) 0%, 
+    rgba(139, 92, 246, 0.05) 100%
+  );
+  
+  --mood-gradient-energetic: linear-gradient(135deg, 
+    rgba(239, 68, 68, 0.15) 0%, 
+    rgba(245, 158, 11, 0.1) 50%,
+    rgba(16, 185, 129, 0.05) 100%
+  );
+  
+  --mood-gradient-dramatic: linear-gradient(135deg, 
+    rgba(17, 24, 39, 0.2) 0%, 
+    rgba(75, 85, 99, 0.15) 50%,
+    rgba(209, 213, 219, 0.1) 100%
+  );
+  
+  --mood-gradient-mystical: linear-gradient(135deg, 
+    rgba(91, 33, 182, 0.15) 0%, 
+    rgba(139, 92, 246, 0.1) 25%,
+    rgba(59, 130, 246, 0.08) 50%,
+    rgba(16, 185, 129, 0.05) 100%
+  );
+  
+  /* Text shadow based on drama level */
+  --text-shadow: none;
+  --text-shadow-light: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --text-shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --text-shadow-heavy: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --text-shadow-dramatic: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
+  
+  /* Animation timing based on poem tempo */
+  --animation-duration: 2000ms;
+  --animation-stagger: 150ms;
+  --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Typography system */
+  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-display: 'Playfair Display', Georgia, serif;
+  --font-weight-base: 400;
+  --font-scale: 1.0;
+  --line-height-base: 1.6;
+  --letter-spacing-base: 0em;
+  
+  /* Layout and spacing */
+  --spacing-scale: 1.0;
+  --border-radius-base: 8px;
+  --backdrop-blur: 4px;
+  
+  /* Opacity layers for depth */
+  --opacity-1: 0.9;
+  --opacity-2: 0.6;
+  --opacity-3: 0.3;
+  
+  /* Color temperature filters */
+  --color-temperature-filter: none;
+  --brightness-filter: 1;
+  --saturation-filter: 1;
+  --contrast-filter: 1;
+  
+  /* Transition settings */
+  --theme-transition-duration: 2s;
+  --theme-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global theme transition - applies to all theme-aware properties */
+* {
+  transition: 
+    background-color var(--theme-transition-duration) var(--theme-transition-easing),
+    border-color var(--theme-transition-duration) var(--theme-transition-easing),
+    color var(--theme-transition-duration) var(--theme-transition-easing),
+    box-shadow var(--theme-transition-duration) var(--theme-transition-easing),
+    text-shadow var(--theme-transition-duration) var(--theme-transition-easing),
+    filter var(--theme-transition-duration) var(--theme-transition-easing);
+}
+
+/* Body with theme-aware filters */
+body {
+  background: var(--bg-gradient);
+  filter: 
+    brightness(var(--brightness-filter)) 
+    saturate(var(--saturation-filter)) 
+    contrast(var(--contrast-filter));
+  min-height: 100vh;
+  transition: all var(--theme-transition-duration) var(--theme-transition-easing);
+}
+
+/* Color temperature variations */
+body[data-color-temperature="warm"] {
+  --brightness-filter: 1.1;
+  --color-temperature-filter: sepia(0.1) hue-rotate(-10deg);
+}
+
+body[data-color-temperature="cool"] {
+  --brightness-filter: 0.95;
+  --color-temperature-filter: hue-rotate(10deg) contrast(1.05);
+}
+
+body[data-color-temperature="neutral"] {
+  --brightness-filter: 1;
+  --color-temperature-filter: none;
+}
+
+/* Emotion-based modifications */
+body[data-emotion="joy"] {
+  --brightness-filter: 1.15;
+  --saturation-filter: 1.1;
+}
+
+body[data-emotion="melancholy"],
+body[data-emotion="sadness"] {
+  --brightness-filter: 0.85;
+  --saturation-filter: 0.7;
+  --contrast-filter: 1.1;
+}
+
+body[data-emotion="wonder"],
+body[data-emotion="mystery"] {
+  --contrast-filter: 1.05;
+  --saturation-filter: 1.05;
+}
+
+body[data-emotion="anger"],
+body[data-emotion="passion"] {
+  --saturation-filter: 1.2;
+  --contrast-filter: 1.1;
+}
+
+body[data-emotion="peace"],
+body[data-emotion="serenity"] {
+  --brightness-filter: 1.05;
+  --saturation-filter: 0.9;
+}
+
+/* Animation style variations */
+body[data-animation-style="calm"] {
+  --animation-duration: 3000ms;
+  --animation-stagger: 200ms;
+  --animation-easing: cubic-bezier(0.25, 0.25, 0, 1);
+}
+
+body[data-animation-style="energetic"] {
+  --animation-duration: 1200ms;
+  --animation-stagger: 80ms;
+  --animation-easing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+body[data-animation-style="dramatic"] {
+  --animation-duration: 2500ms;
+  --animation-stagger: 120ms;
+  --animation-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+body[data-animation-style="mystical"] {
+  --animation-duration: 2200ms;
+  --animation-stagger: 180ms;
+  --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Typography mood variations */
+body[data-typography-mood="modern"] {
+  --font-family-display: 'Inter', sans-serif;
+  --font-weight-base: 400;
+  --letter-spacing-base: 0.02em;
+}
+
+body[data-typography-mood="classic"] {
+  --font-family-display: 'Playfair Display', serif;
+  --font-weight-base: 300;
+  --letter-spacing-base: 0.01em;
+  --line-height-base: 1.8;
+}
+
+body[data-typography-mood="playful"] {
+  --font-weight-base: 500;
+  --letter-spacing-base: 0.03em;
+  --line-height-base: 1.5;
+}
+
+body[data-typography-mood="elegant"] {
+  --font-family-display: 'Playfair Display', serif;
+  --font-weight-base: 300;
+  --letter-spacing-base: 0.05em;
+  --line-height-base: 1.9;
+}
+
+/* Text shadow intensity based on drama */
+body[data-emotion-intensity="1"],
+body[data-emotion-intensity="2"],
+body[data-emotion-intensity="3"] {
+  --text-shadow: var(--text-shadow-light);
+}
+
+body[data-emotion-intensity="4"],
+body[data-emotion-intensity="5"],
+body[data-emotion-intensity="6"] {
+  --text-shadow: var(--text-shadow-medium);
+}
+
+body[data-emotion-intensity="7"],
+body[data-emotion-intensity="8"] {
+  --text-shadow: var(--text-shadow-heavy);
+}
+
+body[data-emotion-intensity="9"],
+body[data-emotion-intensity="10"] {
+  --text-shadow: var(--text-shadow-dramatic);
+}
+
+/* Preset theme fallbacks */
+.theme-preset-1 {
+  --primary-color: #3b82f6;
+  --secondary-color: #8b5cf6;
+  --tertiary-color: #06b6d4;
+  --quaternary-color: #10b981;
+  --quinary-color: #f59e0b;
+}
+
+.theme-preset-2 {
+  --primary-color: #ef4444;
+  --secondary-color: #f97316;
+  --tertiary-color: #f59e0b;
+  --quaternary-color: #eab308;
+  --quinary-color: #84cc16;
+}
+
+.theme-preset-3 {
+  --primary-color: #8b5cf6;
+  --secondary-color: #a855f7;
+  --tertiary-color: #c084fc;
+  --quaternary-color: #ddd6fe;
+  --quinary-color: #f3f4f6;
+}
+
+.theme-preset-4 {
+  --primary-color: #059669;
+  --secondary-color: #0d9488;
+  --tertiary-color: #0891b2;
+  --quaternary-color: #0284c7;
+  --quinary-color: #2563eb;
+}
+
+.theme-preset-5 {
+  --primary-color: #dc2626;
+  --secondary-color: #ea580c;
+  --tertiary-color: #ca8a04;
+  --quaternary-color: #65a30d;
+  --quinary-color: #16a34a;
+}
+
+/* Mood gradient overlays */
+body[data-animation-style="calm"]::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--mood-gradient-calm);
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--opacity-2);
+  transition: opacity var(--theme-transition-duration) var(--theme-transition-easing);
+}
+
+body[data-animation-style="energetic"]::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--mood-gradient-energetic);
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--opacity-2);
+  transition: opacity var(--theme-transition-duration) var(--theme-transition-easing);
+}
+
+body[data-animation-style="dramatic"]::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--mood-gradient-dramatic);
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--opacity-2);
+  transition: opacity var(--theme-transition-duration) var(--theme-transition-easing);
+}
+
+body[data-animation-style="mystical"]::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--mood-gradient-mystical);
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--opacity-3);
+  transition: opacity var(--theme-transition-duration) var(--theme-transition-easing);
+}
+
+/* Particle effects get theme colors */
+.particle-effects .particle {
+  color: var(--theme-accent);
+  filter: drop-shadow(0 0 4px var(--theme-primary));
+}
+
+/* Background patterns for enhanced atmosphere */
+body[data-particles-enabled="true"][data-particle-type="light_rays"] {
+  background-image: 
+    var(--bg-gradient),
+    radial-gradient(circle at 20% 30%, var(--theme-accent) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--theme-secondary) 0%, transparent 50%);
+}
+
+body[data-particles-enabled="true"][data-particle-type="dust"] {
+  background-image: 
+    var(--bg-gradient),
+    radial-gradient(ellipse at center, rgba(139,69,19,0.05) 0%, transparent 70%);
+}
+
+/* Theme transition loading state */
+.theme-loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--theme-primary);
+}
+
+.theme-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--theme-neutral);
+  border-top: 3px solid var(--theme-primary);
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --animation-duration: calc(var(--animation-duration) * 0.8);
+    --animation-stagger: calc(var(--animation-stagger) * 0.8);
+    --spacing-scale: calc(var(--spacing-scale) * 0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --animation-duration: 0ms;
+    --animation-stagger: 0ms;
+    --theme-transition-duration: 0ms;
+  }
+  
+  * {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --contrast-filter: 1.3;
+  }
+}
+

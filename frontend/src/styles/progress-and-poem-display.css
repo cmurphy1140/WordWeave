@@ -1,0 +1,424 @@
+/* Progress Bar Styles */
+.progress-bar-container {
+  margin: 2rem auto;
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.progress-bar-wrapper {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  position: relative;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.progress-percentage {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  font-weight: 600;
+}
+
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+}
+
+/* Home Progress Bar Specific Styles */
+.home-progress-bar {
+  margin: 1rem auto 2rem;
+}
+
+/* Poem Display Styles */
+.poem-display-container {
+  margin: 3rem auto;
+  max-width: 800px;
+  padding: 0 1rem;
+}
+
+.poem-display-container.loading {
+  margin: 2rem auto;
+}
+
+.poem-loading-placeholder {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.loading-lines {
+  margin-bottom: 2rem;
+}
+
+.loading-line {
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  transform-origin: left;
+}
+
+.loading-line:nth-child(1) { width: 80%; }
+.loading-line:nth-child(2) { width: 60%; }
+.loading-line:nth-child(3) { width: 90%; }
+.loading-line:nth-child(4) { width: 70%; }
+
+.loading-text {
+  font-size: 1.1rem;
+  color: #666;
+  font-style: italic;
+  font-family: 'Crimson Text', serif;
+}
+
+.poem-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.poem-title {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.poem-metadata {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.metadata-item {
+  font-size: 0.9rem;
+  color: #666;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+}
+
+.poem-content-wrapper {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.poem-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.action-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.action-button.secondary {
+  background: rgba(255, 255, 255, 0.9);
+  color: #666;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.action-button.secondary:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.poem-analysis {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.poem-analysis h4 {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.analysis-item {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.analysis-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.analysis-value {
+  font-size: 1rem;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Home Poem Display Specific Styles */
+.home-poem-display {
+  margin: 2rem auto;
+}
+
+/* Clean Poem Text Styles */
+.poem-text-container {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.poem-text-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+}
+
+.poem-text {
+  font-family: 'Crimson Text', 'Georgia', serif;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: #2c3e50;
+  white-space: pre-wrap;
+  margin: 0;
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.poem-text::first-line {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #34495e;
+}
+
+/* Responsive poem text */
+@media (max-width: 768px) {
+  .poem-text-container {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .poem-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+  
+  .poem-text::first-line {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .poem-text-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .poem-text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+/* Poem Placeholder Styles */
+.poem-placeholder {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+.poem-placeholder h3 {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.poem-placeholder p {
+  font-size: 1.1rem;
+  color: #666;
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .progress-bar-container,
+  .poem-display-container {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+
+  .progress-bar-wrapper,
+  .poem-header,
+  .poem-content-wrapper,
+  .poem-analysis {
+    padding: 1.5rem;
+  }
+
+  .poem-metadata {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .poem-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .action-button {
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .poem-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-bar-wrapper,
+  .poem-header,
+  .poem-content-wrapper,
+  .poem-analysis {
+    padding: 1rem;
+  }
+
+  .poem-title {
+    font-size: 1.3rem;
+  }
+
+  .metadata-item {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

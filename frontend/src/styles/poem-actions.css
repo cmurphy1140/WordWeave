@@ -1,0 +1,213 @@
+/* Poem Actions Styling */
+.poem-actions {
+  position: relative;
+}
+
+.action-button {
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.01em;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0); /* Enable hardware acceleration */
+  will-change: transform;
+}
+
+.action-button:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 
+    0 4px 15px rgba(102, 126, 234, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.action-button.primary:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  box-shadow: 
+    0 6px 20px rgba(102, 126, 234, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.action-button.primary:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 2px 8px rgba(102, 126, 234, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.action-button.secondary {
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.action-button.secondary:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  color: #667eea;
+}
+
+.action-button.secondary.active {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.3);
+  color: #667eea;
+  box-shadow: 
+    0 2px 10px rgba(102, 126, 234, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.action-button.secondary.active:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+/* Icon animation */
+.action-button svg {
+  transition: transform 0.2s ease;
+}
+
+.action-button:hover svg {
+  transform: scale(1.1);
+}
+
+.action-button.active svg {
+  transform: scale(1.05);
+}
+
+/* Button ripple effect enhancement */
+.button-ripple {
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Share menu styling */
+.share-menu {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.share-menu button {
+  transition: all 0.2s ease;
+  color: #64748b;
+}
+
+.share-menu button:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  transform: translateX(2px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .poem-actions {
+    padding: 20px 0;
+  }
+  
+  .action-button {
+    font-size: 13px;
+    padding: 10px 14px;
+    min-height: 40px;
+  }
+  
+  .action-button.primary {
+    padding: 12px 18px;
+  }
+  
+  .action-button svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .poem-actions {
+    gap: 8px;
+  }
+  
+  .action-button {
+    flex: 1;
+    min-width: 0;
+    max-width: 120px;
+  }
+  
+  .action-button span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .action-button.secondary {
+    background: rgba(30, 41, 59, 0.8);
+    color: #cbd5e1;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .action-button.secondary:hover {
+    background: rgba(51, 65, 85, 0.9);
+    color: #f1f5f9;
+    border-color: rgba(102, 126, 234, 0.4);
+  }
+  
+  .share-menu {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .share-menu button {
+    color: #cbd5e1;
+  }
+  
+  .share-menu button:hover {
+    color: #f1f5f9;
+    background: rgba(102, 126, 234, 0.2);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .action-button.secondary {
+    border-width: 2px;
+    border-color: #000;
+  }
+  
+  .action-button.primary {
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .action-button,
+  .action-button svg,
+  .button-ripple,
+  .share-menu button {
+    transition: none;
+    animation: none;
+  }
+  
+  .action-button:hover {
+    transform: none;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.action-button:focus-visible {
+  z-index: 1;
+}

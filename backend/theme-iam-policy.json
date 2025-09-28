@@ -1,0 +1,47 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "BedrockAccess",
+            "Effect": "Allow",
+            "Action": [
+                "bedrock:InvokeModel",
+                "bedrock:GetFoundationModel",
+                "bedrock:ListFoundationModels"
+            ],
+            "Resource": [
+                "arn:aws:bedrock:*:*:foundation-model/anthropic.claude-3-5-sonnet-*"
+            ]
+        },
+        {
+            "Sid": "DynamoDBThemeAccess",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:Query",
+                "dynamodb:Scan"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:*:*:table/wordweave-themes-python",
+                "arn:aws:dynamodb:*:*:table/wordweave-themes-python/index/*"
+            ]
+        },
+        {
+            "Sid": "CloudWatchLogs",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/lambda/wordweave-theme-analyzer-python:*"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,142 @@
+/* HomePage styles inspired by The Dial */
+
+.home-page {
+  padding: var(--space-2xl) 0;
+}
+
+/* Introduction Section */
+.intro-section {
+  margin-bottom: var(--space-4xl);
+  padding-bottom: var(--space-2xl);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.intro-section h2 {
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+}
+
+.intro-section p {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Enhanced CTA Button */
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--theme-primary, #667eea), var(--theme-secondary, #764ba2));
+  color: white;
+  text-decoration: none;
+  padding: 1.25rem 2.5rem;
+  border-radius: var(--border-radius-lg, 12px);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  box-shadow: 0 8px 25px rgba(var(--theme-primary-rgb, 102, 126, 234), 0.3);
+  transition: all 0.3s ease;
+  margin: var(--space-lg) 0;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(var(--theme-primary-rgb, 102, 126, 234), 0.4);
+  color: white;
+  text-decoration: none;
+}
+
+.cta-button:active {
+  transform: translateY(-1px);
+}
+
+.cta-description {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-sm);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Content Grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-4xl);
+}
+
+.generator-section,
+.display-section {
+  min-height: 400px;
+}
+
+/* Features Section */
+.features-section {
+  padding-top: var(--space-2xl);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.features-section h3 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-lg);
+}
+
+.features-section h4 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.features-section p {
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  
+  .intro-section h2 {
+    font-size: var(--text-2xl);
+  }
+  
+  .intro-section p {
+    font-size: var(--text-base);
+  }
+  
+  .features-section .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding: var(--space-lg) 0;
+  }
+  
+  .intro-section {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+  }
+  
+  .content-grid {
+    margin-bottom: var(--space-2xl);
+  }
+  
+  .features-section {
+    padding-top: var(--space-lg);
+  }
+}

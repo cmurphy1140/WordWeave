@@ -1,0 +1,401 @@
+# Percy configuration for WordWeave visual regression testing
+# Handles theme variations, animations, and responsive design testing
+
+version: 2
+
+# Percy project settings
+project: wordweave
+
+# Build settings
+build:
+  # Build command
+  command: npm run build
+  
+  # Build directory
+  directory: ./frontend/build
+  
+  # Build environment variables
+  env:
+    NODE_ENV: production
+    REACT_APP_API_URL: https://api.wordweave.app
+    REACT_APP_ENABLE_ANIMATIONS: true
+    REACT_APP_ENABLE_PARTICLES: true
+
+# Snapshot settings
+snapshots:
+  # Base URL for snapshots
+  baseUrl: http://localhost:3000
+  
+  # Snapshot patterns
+  include:
+    - "**/*.percy.js"
+    - "**/*.percy.ts"
+    - "**/*.percy.tsx"
+  
+  # Exclude patterns
+  exclude:
+    - "**/node_modules/**"
+    - "**/coverage/**"
+    - "**/dist/**"
+    - "**/build/**"
+
+# Visual testing settings
+visual:
+  # Enable animations
+  enableAnimations: true
+  
+  # Animation delay (ms)
+  animationDelay: 2000
+  
+  # Enable particles
+  enableParticles: true
+  
+  # Particle delay (ms)
+  particleDelay: 3000
+
+# Responsive testing
+responsive:
+  # Breakpoints to test
+  breakpoints:
+    - name: mobile
+      width: 375
+      height: 667
+    - name: tablet
+      width: 768
+      height: 1024
+    - name: desktop
+      width: 1280
+      height: 720
+    - name: large-desktop
+      width: 1920
+      height: 1080
+
+# Theme variations
+themes:
+  # Default theme
+  - name: default
+    css: ""
+    
+  # Dark theme
+  - name: dark
+    css: |
+      :root {
+        --color-primary: #ffd700;
+        --color-secondary: #87ceeb;
+        --color-accent: #98fb98;
+        --color-background: #1a1a1a;
+        --color-text: #ffffff;
+      }
+  
+  # High contrast theme
+  - name: high-contrast
+    css: |
+      :root {
+        --color-primary: #ffffff;
+        --color-secondary: #000000;
+        --color-accent: #ffff00;
+        --color-background: #000000;
+        --color-text: #ffffff;
+      }
+  
+  # Reduced motion theme
+  - name: reduced-motion
+    css: |
+      :root {
+        --animation-duration: 0s;
+        --animation-delay: 0s;
+      }
+      
+      * {
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+      }
+
+# Animation testing
+animations:
+  # Animation styles to test
+  styles:
+    - name: calm
+      duration: 2000
+      easing: ease-out
+    - name: energetic
+      duration: 1500
+      easing: ease-in-out
+    - name: dramatic
+      duration: 3000
+      easing: cubic-bezier(0.4, 0, 0.2, 1)
+    - name: mystical
+      duration: 2500
+      easing: ease-in-out
+
+# Particle effects
+particles:
+  # Particle types to test
+  types:
+    - name: sparkles
+      density: 0.3
+      speed: 0.8
+    - name: leaves
+      density: 0.2
+      speed: 0.6
+    - name: rain
+      density: 0.5
+      speed: 1.0
+    - name: snow
+      density: 0.4
+      speed: 0.7
+    - name: bubbles
+      density: 0.3
+      speed: 0.9
+    - name: light_rays
+      density: 0.2
+      speed: 0.5
+    - name: dust
+      density: 0.1
+      speed: 0.4
+    - name: fireflies
+      density: 0.2
+      speed: 0.6
+
+# Typography testing
+typography:
+  # Font moods to test
+  moods:
+    - name: modern
+      fontFamily: "Inter, sans-serif"
+      fontWeight: 400
+    - name: classic
+      fontFamily: "Times New Roman, serif"
+      fontWeight: 400
+    - name: playful
+      fontFamily: "Comic Sans MS, cursive"
+      fontWeight: 400
+    - name: elegant
+      fontFamily: "Georgia, serif"
+      fontWeight: 300
+
+# Color palette testing
+colors:
+  # Emotion-based color palettes
+  palettes:
+    - name: joy
+      colors: ["#ffd700", "#87ceeb", "#98fb98", "#ffffff", "#f0f8ff"]
+    - name: melancholy
+      colors: ["#2c3e50", "#34495e", "#7f8c8d", "#bdc3c7", "#ecf0f1"]
+    - name: serenity
+      colors: ["#74b9ff", "#a29bfe", "#fd79a8", "#fdcb6e", "#e17055"]
+    - name: wonder
+      colors: ["#6c5ce7", "#a29bfe", "#fd79a8", "#fdcb6e", "#e17055"]
+    - name: excitement
+      colors: ["#e84393", "#fd79a8", "#fdcb6e", "#e17055", "#d63031"]
+    - name: contemplation
+      colors: ["#636e72", "#74b9ff", "#a29bfe", "#fd79a8", "#fdcb6e"]
+
+# Layout testing
+layouts:
+  # Layout styles to test
+  styles:
+    - name: centered
+      justifyContent: center
+      alignItems: center
+    - name: book
+      justifyContent: flex-start
+      alignItems: flex-start
+    - name: spiral
+      justifyContent: center
+      alignItems: center
+      transform: rotate(5deg)
+    - name: scattered
+      justifyContent: space-around
+      alignItems: flex-start
+
+# Test scenarios
+scenarios:
+  # Happy path scenarios
+  - name: successful-poem-generation
+    steps:
+      - visit: "/"
+      - fill: ["dance", "graceful", "butterfly"]
+      - submit: true
+      - wait: 3000
+  
+  # Error scenarios
+  - name: api-error
+    steps:
+      - visit: "/"
+      - mockError: true
+      - fill: ["dance", "graceful", "butterfly"]
+      - submit: true
+      - wait: 2000
+  
+  # Loading scenarios
+  - name: loading-states
+    steps:
+      - visit: "/"
+      - fill: ["dance", "graceful", "butterfly"]
+      - submit: true
+      - wait: 1000
+      - wait: 2000
+      - wait: 3000
+
+# Accessibility testing
+accessibility:
+  # WCAG levels to test
+  levels:
+    - wcag2a
+    - wcag2aa
+    - wcag21aa
+  
+  # Impact levels to test
+  impacts:
+    - minor
+    - moderate
+    - serious
+    - critical
+
+# Performance testing
+performance:
+  # Performance budgets
+  budgets:
+    - name: page-load
+      threshold: 2000
+      metric: loadTime
+    - name: first-contentful-paint
+      threshold: 1500
+      metric: fcp
+    - name: largest-contentful-paint
+      threshold: 2500
+      metric: lcp
+    - name: cumulative-layout-shift
+      threshold: 0.1
+      metric: cls
+
+# Browser testing
+browsers:
+  # Browsers to test
+  - name: chrome
+    version: latest
+  - name: firefox
+    version: latest
+  - name: safari
+    version: latest
+  - name: edge
+    version: latest
+
+# Mobile testing
+mobile:
+  # Mobile devices to test
+  devices:
+    - name: iPhone 12
+      width: 390
+      height: 844
+    - name: iPhone 12 Pro Max
+      width: 428
+      height: 926
+    - name: Samsung Galaxy S21
+      width: 384
+      height: 854
+    - name: iPad
+      width: 768
+      height: 1024
+    - name: iPad Pro
+      width: 1024
+      height: 1366
+
+# CI/CD integration
+ci:
+  # CI environment variables
+  env:
+    PERCY_TOKEN: ${PERCY_TOKEN}
+    PERCY_PROJECT: wordweave
+    PERCY_BRANCH: ${BRANCH_NAME}
+    PERCY_COMMIT: ${COMMIT_SHA}
+  
+  # Parallel testing
+  parallel:
+    enabled: true
+    total: 4
+  
+  # Test grouping
+  groups:
+    - name: theme-tests
+      pattern: "**/theme-*.percy.js"
+    - name: animation-tests
+      pattern: "**/animation-*.percy.js"
+    - name: responsive-tests
+      pattern: "**/responsive-*.percy.js"
+    - name: accessibility-tests
+      pattern: "**/a11y-*.percy.js"
+
+# Notifications
+notifications:
+  # Slack integration
+  slack:
+    enabled: true
+    webhook: ${SLACK_WEBHOOK_URL}
+    channel: "#wordweave-tests"
+  
+  # Email notifications
+  email:
+    enabled: true
+    recipients: ["team@wordweave.app"]
+  
+  # GitHub integration
+  github:
+    enabled: true
+    token: ${GITHUB_TOKEN}
+    repository: "your-org/wordweave"
+
+# Reporting
+reporting:
+  # Report formats
+  formats:
+    - html
+    - json
+    - junit
+  
+  # Report locations
+  output:
+    html: ./percy-reports/html
+    json: ./percy-reports/json
+    junit: ./percy-reports/junit
+  
+  # Report retention
+  retention:
+    days: 30
+    maxReports: 100
+
+# Advanced settings
+advanced:
+  # Snapshot matching
+  matching:
+    threshold: 0.2
+    thresholdType: percent
+  
+  # Ignore regions
+  ignore:
+    - selector: ".timestamp"
+    - selector: ".random-id"
+    - selector: ".dynamic-content"
+  
+  # Custom CSS
+  css: |
+    .percy-hide {
+      visibility: hidden !important;
+    }
+    
+    .percy-blur {
+      filter: blur(10px) !important;
+    }
+  
+  # Custom JavaScript
+  js: |
+    // Hide dynamic content
+    document.querySelectorAll('.timestamp').forEach(el => {
+      el.style.visibility = 'hidden';
+    });
+    
+    // Wait for animations to complete
+    await new Promise(resolve => setTimeout(resolve, 2000));

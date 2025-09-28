@@ -1,0 +1,55 @@
+{
+  "name": "wordweave",
+  "version": "1.0.0",
+  "description": "Transform poetry into living web experiences",
+  "keywords": [
+    "poetry",
+    "ai",
+    "animation",
+    "react",
+    "aws",
+    "bedrock"
+  ],
+  "homepage": "https://wordweave.app",
+  "bugs": {
+    "url": "https://github.com/yourusername/wordweave/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/wordweave.git"
+  },
+  "license": "MIT",
+  "author": "WordWeave Team",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "deploy:dev": "cd backend && npm run deploy:dev",
+    "deploy:staging": "cd backend && npm run deploy:staging",
+    "deploy:prod": "cd backend && npm run deploy:prod"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "serverless-prune-plugin": "^2.1.0",
+    "serverless-python-requirements": "^6.1.2"
+  }
+}
+

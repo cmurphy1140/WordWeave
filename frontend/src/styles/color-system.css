@@ -1,0 +1,867 @@
+/* VerseCanvas Comprehensive Color System - CSS Implementation */
+
+/* Import Google Fonts for better typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ========================================
+   EMOTIONAL COLOR PALETTES
+   ======================================== */
+
+:root {
+  /* ========================================
+     JOY PALETTE - "Golden Radiance"
+     ======================================== */
+  --joy-primary: #FFD700;      /* Golden Yellow - Core joy */
+  --joy-secondary: #FF7F50;    /* Coral - Warmth and energy */
+  --joy-accent: #F0E68C;       /* Champagne - Elegant celebration */
+  --joy-surface: #FFE4B5;      /* Peach - Soft warmth */
+  --joy-text: #FFF8DC;         /* Cream - Gentle contrast */
+  
+  /* Joy Extended Palette */
+  --joy-golden: #FFD700;       /* Pure gold */
+  --joy-coral: #FF7F50;        /* Vibrant coral */
+  --joy-champagne: #F0E68C;    /* Sophisticated champagne */
+  --joy-peach: #FFE4B5;        /* Soft peach */
+  --joy-cream: #FFF8DC;        /* Warm cream */
+  
+  /* Joy Semantic Tokens */
+  --joy-bg-primary: var(--joy-cream);
+  --joy-bg-secondary: var(--joy-peach);
+  --joy-text-primary: #8B4513;  /* Dark brown for contrast */
+  --joy-text-secondary: #A0522D; /* Saddle brown */
+  --joy-border: var(--joy-golden);
+  --joy-shadow: rgba(255, 215, 0, 0.3);
+
+  /* ========================================
+     MELANCHOLY PALETTE - "Deep Contemplation"
+     ======================================== */
+  --melancholy-primary: #4169E1;   /* Deep Blue - Core melancholy */
+  --melancholy-secondary: #4B0082; /* Indigo - Depth and mystery */
+  --melancholy-accent: #708090;    /* Slate - Neutral contemplation */
+  --melancholy-surface: #B0C4DE;   /* Fog - Soft, misty */
+  --melancholy-text: #C0C0C0;      /* Silver - Gentle shimmer */
+  
+  /* Melancholy Extended Palette */
+  --melancholy-deep-blue: #4169E1; /* Royal blue */
+  --melancholy-indigo: #4B0082;    /* Deep indigo */
+  --melancholy-slate: #708090;     /* Cool slate */
+  --melancholy-fog: #B0C4DE;      /* Misty fog */
+  --melancholy-silver: #C0C0C0;    /* Soft silver */
+  
+  /* Melancholy Semantic Tokens */
+  --melancholy-bg-primary: var(--melancholy-fog);
+  --melancholy-bg-secondary: var(--melancholy-silver);
+  --melancholy-text-primary: #2F4F4F; /* Dark slate gray */
+  --melancholy-text-secondary: #4682B4; /* Steel blue */
+  --melancholy-border: var(--melancholy-deep-blue);
+  --melancholy-shadow: rgba(65, 105, 225, 0.3);
+
+  /* ========================================
+     PASSION PALETTE - "Crimson Fire"
+     ======================================== */
+  --passion-primary: #DC143C;     /* Crimson - Core passion */
+  --passion-secondary: #800020;    /* Burgundy - Deep intensity */
+  --passion-accent: #FF69B4;       /* Rose - Romantic touch */
+  --passion-surface: #FFB6C1;     /* Blush - Soft passion */
+  --passion-text: #722F37;        /* Wine - Rich depth */
+  
+  /* Passion Extended Palette */
+  --passion-crimson: #DC143C;     /* Intense crimson */
+  --passion-burgundy: #800020;    /* Deep burgundy */
+  --passion-rose: #FF69B4;        /* Hot pink rose */
+  --passion-blush: #FFB6C1;       /* Soft blush */
+  --passion-wine: #722F37;        /* Rich wine */
+  
+  /* Passion Semantic Tokens */
+  --passion-bg-primary: var(--passion-blush);
+  --passion-bg-secondary: var(--passion-wine);
+  --passion-text-primary: #8B0000; /* Dark red */
+  --passion-text-secondary: #A0522D; /* Sienna */
+  --passion-border: var(--passion-crimson);
+  --passion-shadow: rgba(220, 20, 60, 0.4);
+
+  /* ========================================
+     MYSTERY PALETTE - "Purple Enigma"
+     ======================================== */
+  --mystery-primary: #8A2BE2;     /* Purple - Core mystery */
+  --mystery-secondary: #8B008B;    /* Violet - Deep intrigue */
+  --mystery-accent: #DDA0DD;      /* Plum - Soft mystery */
+  --mystery-surface: #191970;     /* Midnight - Dark depth */
+  --mystery-text: #2F2F2F;        /* Obsidian - Dark contrast */
+  
+  /* Mystery Extended Palette */
+  --mystery-purple: #8A2BE2;     /* Blue violet */
+  --mystery-violet: #8B008B;      /* Dark magenta */
+  --mystery-plum: #DDA0DD;       /* Soft plum */
+  --mystery-midnight: #191970;   /* Midnight blue */
+  --mystery-obsidian: #2F2F2F;   /* Dark obsidian */
+  
+  /* Mystery Semantic Tokens */
+  --mystery-bg-primary: var(--mystery-midnight);
+  --mystery-bg-secondary: var(--mystery-obsidian);
+  --mystery-text-primary: #E6E6FA; /* Lavender */
+  --mystery-text-secondary: #DDA0DD; /* Plum */
+  --mystery-border: var(--mystery-purple);
+  --mystery-shadow: rgba(138, 43, 226, 0.5);
+
+  /* ========================================
+     SERENITY PALETTE - "Calm Waters"
+     ======================================== */
+  --serenity-primary: #9CAF88;    /* Sage - Core serenity */
+  --serenity-secondary: #87CEEB;  /* Seafoam - Ocean calm */
+  --serenity-accent: #98FB98;     /* Mint - Fresh tranquility */
+  --serenity-surface: #87CEFA;    /* Sky - Open peace */
+  --serenity-text: #F0F8FF;       /* Pearl - Pure light */
+  
+  /* Serenity Extended Palette */
+  --serenity-sage: #9CAF88;       /* Gentle sage */
+  --serenity-seafoam: #87CEEB;    /* Ocean seafoam */
+  --serenity-mint: #98FB98;       /* Fresh mint */
+  --serenity-sky: #87CEFA;        /* Open sky */
+  --serenity-pearl: #F0F8FF;      /* Pure pearl */
+  
+  /* Serenity Semantic Tokens */
+  --serenity-bg-primary: var(--serenity-pearl);
+  --serenity-bg-secondary: var(--serenity-sky);
+  --serenity-text-primary: #2F4F4F; /* Dark slate gray */
+  --serenity-text-secondary: #4682B4; /* Steel blue */
+  --serenity-border: var(--serenity-sage);
+  --serenity-shadow: rgba(156, 175, 136, 0.3);
+
+  /* ========================================
+     UNIVERSAL SEMANTIC TOKENS
+     ======================================== */
+  --color-primary: var(--joy-primary);      /* Dominant emotion */
+  --color-secondary: var(--joy-secondary);  /* Supporting emotion */
+  --color-accent: var(--joy-accent);        /* Surprise elements */
+  --color-surface: var(--joy-surface);      /* Background variations */
+  --color-text: var(--joy-text);            /* Adaptive contrast */
+  
+  /* Extended Semantic Tokens */
+  --color-primary-hover: color-mix(in srgb, var(--color-primary) 80%, white);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 60%, black);
+  --color-secondary-hover: color-mix(in srgb, var(--color-secondary) 80%, white);
+  --color-secondary-active: color-mix(in srgb, var(--color-secondary) 60%, black);
+  
+  /* Surface Variations */
+  --color-surface-1: var(--color-surface);
+  --color-surface-2: color-mix(in srgb, var(--color-surface) 90%, var(--color-primary));
+  --color-surface-3: color-mix(in srgb, var(--color-surface) 80%, var(--color-secondary));
+  --color-surface-4: color-mix(in srgb, var(--color-surface) 70%, var(--color-accent));
+  
+  /* Text Variations */
+  --color-text-primary: var(--color-text);
+  --color-text-secondary: color-mix(in srgb, var(--color-text) 80%, var(--color-primary));
+  --color-text-tertiary: color-mix(in srgb, var(--color-text) 60%, var(--color-secondary));
+  --color-text-disabled: color-mix(in srgb, var(--color-text) 40%, var(--color-surface));
+  
+  /* Border Variations */
+  --color-border-primary: var(--color-primary);
+  --color-border-secondary: var(--color-secondary);
+  --color-border-subtle: color-mix(in srgb, var(--color-surface) 50%, var(--color-text));
+  --color-border-focus: var(--color-accent);
+  
+  /* Shadow Variations */
+  --color-shadow-sm: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --color-shadow-md: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --color-shadow-lg: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  --color-shadow-xl: color-mix(in srgb, var(--color-primary) 40%, transparent);
+
+  /* ========================================
+     CUSTOM EASING FUNCTIONS
+     ======================================== */
+  --ease-emotional: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-passionate: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-mystical: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-serene: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-joyful: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========================================
+   EMOTION-SPECIFIC SEMANTIC TOKENS
+   ======================================== */
+
+/* Joy Semantic Tokens */
+.emotion-joy {
+  --color-primary: var(--joy-primary);
+  --color-secondary: var(--joy-secondary);
+  --color-accent: var(--joy-accent);
+  --color-surface: var(--joy-surface);
+  --color-text: var(--joy-text);
+  --color-border: var(--joy-border);
+  --color-shadow: var(--joy-shadow);
+}
+
+/* Melancholy Semantic Tokens */
+.emotion-melancholy {
+  --color-primary: var(--melancholy-primary);
+  --color-secondary: var(--melancholy-secondary);
+  --color-accent: var(--melancholy-accent);
+  --color-surface: var(--melancholy-surface);
+  --color-text: var(--melancholy-text);
+  --color-border: var(--melancholy-border);
+  --color-shadow: var(--melancholy-shadow);
+}
+
+/* Passion Semantic Tokens */
+.emotion-passion {
+  --color-primary: var(--passion-primary);
+  --color-secondary: var(--passion-secondary);
+  --color-accent: var(--passion-accent);
+  --color-surface: var(--passion-surface);
+  --color-text: var(--passion-text);
+  --color-border: var(--passion-border);
+  --color-shadow: var(--passion-shadow);
+}
+
+/* Mystery Semantic Tokens */
+.emotion-mystery {
+  --color-primary: var(--mystery-primary);
+  --color-secondary: var(--mystery-secondary);
+  --color-accent: var(--mystery-accent);
+  --color-surface: var(--mystery-surface);
+  --color-text: var(--mystery-text);
+  --color-border: var(--mystery-border);
+  --color-shadow: var(--mystery-shadow);
+}
+
+/* Serenity Semantic Tokens */
+.emotion-serenity {
+  --color-primary: var(--serenity-primary);
+  --color-secondary: var(--serenity-secondary);
+  --color-accent: var(--serenity-accent);
+  --color-surface: var(--serenity-surface);
+  --color-text: var(--serenity-text);
+  --color-border: var(--serenity-border);
+  --color-shadow: var(--serenity-shadow);
+}
+
+/* ========================================
+   GRADIENT ALGORITHMS
+   ======================================== */
+
+/* Linear Gradients - Emotional Intensity Mapping */
+.gradient-joy-linear {
+  background: linear-gradient(
+    135deg,
+    var(--joy-primary) 0%,
+    var(--joy-secondary) 25%,
+    var(--joy-accent) 50%,
+    var(--joy-surface) 75%,
+    var(--joy-text) 100%
+  );
+}
+
+.gradient-melancholy-linear {
+  background: linear-gradient(
+    45deg,
+    var(--melancholy-primary) 0%,
+    var(--melancholy-secondary) 30%,
+    var(--melancholy-accent) 60%,
+    var(--melancholy-surface) 85%,
+    var(--melancholy-text) 100%
+  );
+}
+
+.gradient-passion-linear {
+  background: linear-gradient(
+    90deg,
+    var(--passion-primary) 0%,
+    var(--passion-secondary) 20%,
+    var(--passion-accent) 40%,
+    var(--passion-surface) 70%,
+    var(--passion-text) 100%
+  );
+}
+
+.gradient-mystery-linear {
+  background: linear-gradient(
+    225deg,
+    var(--mystery-primary) 0%,
+    var(--mystery-secondary) 25%,
+    var(--mystery-accent) 50%,
+    var(--mystery-surface) 80%,
+    var(--mystery-text) 100%
+  );
+}
+
+.gradient-serenity-linear {
+  background: linear-gradient(
+    180deg,
+    var(--serenity-primary) 0%,
+    var(--serenity-secondary) 35%,
+    var(--serenity-accent) 55%,
+    var(--serenity-surface) 75%,
+    var(--serenity-text) 100%
+  );
+}
+
+/* Radial Gradients - Emanating from Emotional Core */
+.gradient-joy-radial {
+  background: radial-gradient(
+    circle at center,
+    var(--joy-primary) 0%,
+    var(--joy-secondary) 30%,
+    var(--joy-accent) 60%,
+    var(--joy-surface) 85%,
+    var(--joy-text) 100%
+  );
+}
+
+.gradient-melancholy-radial {
+  background: radial-gradient(
+    ellipse at center,
+    var(--melancholy-primary) 0%,
+    var(--melancholy-secondary) 25%,
+    var(--melancholy-accent) 50%,
+    var(--melancholy-surface) 75%,
+    var(--melancholy-text) 100%
+  );
+}
+
+.gradient-passion-radial {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--passion-primary) 0%,
+    var(--passion-secondary) 20%,
+    var(--passion-accent) 45%,
+    var(--passion-surface) 70%,
+    var(--passion-text) 100%
+  );
+}
+
+.gradient-mystery-radial {
+  background: radial-gradient(
+    ellipse at 70% 30%,
+    var(--mystery-primary) 0%,
+    var(--mystery-secondary) 15%,
+    var(--mystery-accent) 40%,
+    var(--mystery-surface) 65%,
+    var(--mystery-text) 100%
+  );
+}
+
+.gradient-serenity-radial {
+  background: radial-gradient(
+    circle at center,
+    var(--serenity-primary) 0%,
+    var(--serenity-secondary) 40%,
+    var(--serenity-accent) 65%,
+    var(--serenity-surface) 85%,
+    var(--serenity-text) 100%
+  );
+}
+
+/* Mesh Gradients - Complex Emotional Nuances */
+.gradient-joy-mesh {
+  background: 
+    radial-gradient(circle at 20% 80%, var(--joy-primary) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, var(--joy-secondary) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, var(--joy-accent) 0%, transparent 50%),
+    linear-gradient(135deg, var(--joy-surface) 0%, var(--joy-text) 100%);
+}
+
+.gradient-melancholy-mesh {
+  background: 
+    radial-gradient(circle at 30% 70%, var(--melancholy-primary) 0%, transparent 60%),
+    radial-gradient(circle at 70% 30%, var(--melancholy-secondary) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, var(--melancholy-accent) 0%, transparent 70%),
+    linear-gradient(45deg, var(--melancholy-surface) 0%, var(--melancholy-text) 100%);
+}
+
+.gradient-passion-mesh {
+  background: 
+    radial-gradient(circle at 25% 75%, var(--passion-primary) 0%, transparent 45%),
+    radial-gradient(circle at 75% 25%, var(--passion-secondary) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, var(--passion-accent) 0%, transparent 55%),
+    linear-gradient(90deg, var(--passion-surface) 0%, var(--passion-text) 100%);
+}
+
+.gradient-mystery-mesh {
+  background: 
+    radial-gradient(circle at 20% 20%, var(--mystery-primary) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, var(--mystery-secondary) 0%, transparent 50%),
+    radial-gradient(circle at 60% 40%, var(--mystery-accent) 0%, transparent 60%),
+    linear-gradient(225deg, var(--mystery-surface) 0%, var(--mystery-text) 100%);
+}
+
+.gradient-serenity-mesh {
+  background: 
+    radial-gradient(circle at 40% 60%, var(--serenity-primary) 0%, transparent 50%),
+    radial-gradient(circle at 60% 40%, var(--serenity-secondary) 0%, transparent 50%),
+    radial-gradient(circle at 30% 70%, var(--serenity-accent) 0%, transparent 60%),
+    linear-gradient(180deg, var(--serenity-surface) 0%, var(--serenity-text) 100%);
+}
+
+/* ========================================
+   ANIMATED GRADIENTS - Colors Shifting Over Time
+   ======================================== */
+
+/* Joy Animation - Warmth pulsing */
+@keyframes joyGradientShift {
+  0% {
+    background: linear-gradient(135deg, var(--joy-primary) 0%, var(--joy-secondary) 100%);
+  }
+  25% {
+    background: linear-gradient(180deg, var(--joy-secondary) 0%, var(--joy-accent) 100%);
+  }
+  50% {
+    background: linear-gradient(225deg, var(--joy-accent) 0%, var(--joy-surface) 100%);
+  }
+  75% {
+    background: linear-gradient(270deg, var(--joy-surface) 0%, var(--joy-text) 100%);
+  }
+  100% {
+    background: linear-gradient(315deg, var(--joy-text) 0%, var(--joy-primary) 100%);
+  }
+}
+
+.gradient-joy-animated {
+  animation: joyGradientShift 8s ease-in-out infinite;
+}
+
+/* Melancholy Animation - Gentle waves */
+@keyframes melancholyGradientShift {
+  0% {
+    background: linear-gradient(45deg, var(--melancholy-primary) 0%, var(--melancholy-secondary) 100%);
+  }
+  33% {
+    background: linear-gradient(90deg, var(--melancholy-secondary) 0%, var(--melancholy-accent) 100%);
+  }
+  66% {
+    background: linear-gradient(135deg, var(--melancholy-accent) 0%, var(--melancholy-surface) 100%);
+  }
+  100% {
+    background: linear-gradient(180deg, var(--melancholy-surface) 0%, var(--melancholy-text) 100%);
+  }
+}
+
+.gradient-melancholy-animated {
+  animation: melancholyGradientShift 12s ease-in-out infinite;
+}
+
+/* Passion Animation - Intense pulsing */
+@keyframes passionGradientShift {
+  0% {
+    background: linear-gradient(90deg, var(--passion-primary) 0%, var(--passion-secondary) 100%);
+  }
+  20% {
+    background: linear-gradient(120deg, var(--passion-secondary) 0%, var(--passion-accent) 100%);
+  }
+  40% {
+    background: linear-gradient(150deg, var(--passion-accent) 0%, var(--passion-surface) 100%);
+  }
+  60% {
+    background: linear-gradient(180deg, var(--passion-surface) 0%, var(--passion-text) 100%);
+  }
+  80% {
+    background: linear-gradient(210deg, var(--passion-text) 0%, var(--passion-primary) 100%);
+  }
+  100% {
+    background: linear-gradient(240deg, var(--passion-primary) 0%, var(--passion-secondary) 100%);
+  }
+}
+
+.gradient-passion-animated {
+  animation: passionGradientShift 6s ease-in-out infinite;
+}
+
+/* Mystery Animation - Mystical shifting */
+@keyframes mysteryGradientShift {
+  0% {
+    background: linear-gradient(225deg, var(--mystery-primary) 0%, var(--mystery-secondary) 100%);
+  }
+  25% {
+    background: linear-gradient(270deg, var(--mystery-secondary) 0%, var(--mystery-accent) 100%);
+  }
+  50% {
+    background: linear-gradient(315deg, var(--mystery-accent) 0%, var(--mystery-surface) 100%);
+  }
+  75% {
+    background: linear-gradient(360deg, var(--mystery-surface) 0%, var(--mystery-text) 100%);
+  }
+  100% {
+    background: linear-gradient(45deg, var(--mystery-text) 0%, var(--mystery-primary) 100%);
+  }
+}
+
+.gradient-mystery-animated {
+  animation: mysteryGradientShift 10s ease-in-out infinite;
+}
+
+/* Serenity Animation - Peaceful breathing */
+@keyframes serenityGradientShift {
+  0% {
+    background: linear-gradient(180deg, var(--serenity-primary) 0%, var(--serenity-secondary) 100%);
+  }
+  50% {
+    background: linear-gradient(270deg, var(--serenity-secondary) 0%, var(--serenity-accent) 100%);
+  }
+  100% {
+    background: linear-gradient(360deg, var(--serenity-accent) 0%, var(--serenity-surface) 100%);
+  }
+}
+
+.gradient-serenity-animated {
+  animation: serenityGradientShift 15s ease-in-out infinite;
+}
+
+/* ========================================
+   TRANSITION SYSTEM
+   ======================================== */
+
+/* Color Transition Classes */
+.color-transition-emotional {
+  transition: 
+    background-color 0.8s var(--ease-emotional),
+    color 0.6s var(--ease-emotional),
+    border-color 0.4s var(--ease-emotional);
+}
+
+.color-transition-passionate {
+  transition: 
+    background-color 0.6s var(--ease-passionate),
+    color 0.4s var(--ease-passionate),
+    border-color 0.3s var(--ease-passionate);
+}
+
+.color-transition-mystical {
+  transition: 
+    background-color 1.2s var(--ease-mystical),
+    color 0.8s var(--ease-mystical),
+    border-color 0.6s var(--ease-mystical);
+}
+
+.color-transition-serene {
+  transition: 
+    background-color 1.0s var(--ease-serene),
+    color 0.7s var(--ease-serene),
+    border-color 0.5s var(--ease-serene);
+}
+
+.color-transition-joyful {
+  transition: 
+    background-color 0.5s var(--ease-joyful),
+    color 0.3s var(--ease-joyful),
+    border-color 0.2s var(--ease-joyful);
+}
+
+/* ========================================
+   STAGGER DELAYS FOR WAVE EFFECTS
+   ======================================== */
+
+/* Wave Effect Classes */
+.wave-effect-joy .poem-line:nth-child(1) { transition-delay: 0.1s; }
+.wave-effect-joy .poem-line:nth-child(2) { transition-delay: 0.2s; }
+.wave-effect-joy .poem-line:nth-child(3) { transition-delay: 0.3s; }
+.wave-effect-joy .poem-line:nth-child(4) { transition-delay: 0.4s; }
+.wave-effect-joy .poem-line:nth-child(5) { transition-delay: 0.5s; }
+
+.wave-effect-melancholy .poem-line:nth-child(1) { transition-delay: 0.2s; }
+.wave-effect-melancholy .poem-line:nth-child(2) { transition-delay: 0.4s; }
+.wave-effect-melancholy .poem-line:nth-child(3) { transition-delay: 0.6s; }
+.wave-effect-melancholy .poem-line:nth-child(4) { transition-delay: 0.8s; }
+.wave-effect-melancholy .poem-line:nth-child(5) { transition-delay: 1.0s; }
+
+.wave-effect-passion .poem-line:nth-child(1) { transition-delay: 0.05s; }
+.wave-effect-passion .poem-line:nth-child(2) { transition-delay: 0.1s; }
+.wave-effect-passion .poem-line:nth-child(3) { transition-delay: 0.15s; }
+.wave-effect-passion .poem-line:nth-child(4) { transition-delay: 0.2s; }
+.wave-effect-passion .poem-line:nth-child(5) { transition-delay: 0.25s; }
+
+.wave-effect-mystery .poem-line:nth-child(1) { transition-delay: 0.3s; }
+.wave-effect-mystery .poem-line:nth-child(2) { transition-delay: 0.6s; }
+.wave-effect-mystery .poem-line:nth-child(3) { transition-delay: 0.9s; }
+.wave-effect-mystery .poem-line:nth-child(4) { transition-delay: 1.2s; }
+.wave-effect-mystery .poem-line:nth-child(5) { transition-delay: 1.5s; }
+
+.wave-effect-serenity .poem-line:nth-child(1) { transition-delay: 0.15s; }
+.wave-effect-serenity .poem-line:nth-child(2) { transition-delay: 0.3s; }
+.wave-effect-serenity .poem-line:nth-child(3) { transition-delay: 0.45s; }
+.wave-effect-serenity .poem-line:nth-child(4) { transition-delay: 0.6s; }
+.wave-effect-serenity .poem-line:nth-child(5) { transition-delay: 0.75s; }
+
+/* ========================================
+   HUE ROTATION FOR MOOD SHIFTS
+   ======================================== */
+
+/* Hue Rotation Animations */
+@keyframes hueShiftJoy {
+  0% { filter: hue-rotate(0deg); }
+  25% { filter: hue-rotate(15deg); }
+  50% { filter: hue-rotate(0deg); }
+  75% { filter: hue-rotate(-15deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+@keyframes hueShiftMelancholy {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(10deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+@keyframes hueShiftPassion {
+  0% { filter: hue-rotate(0deg); }
+  33% { filter: hue-rotate(20deg); }
+  66% { filter: hue-rotate(-10deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+@keyframes hueShiftMystery {
+  0% { filter: hue-rotate(0deg); }
+  25% { filter: hue-rotate(30deg); }
+  50% { filter: hue-rotate(0deg); }
+  75% { filter: hue-rotate(-30deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+@keyframes hueShiftSerenity {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(5deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+/* Hue Shift Classes */
+.hue-shift-joy {
+  animation: hueShiftJoy 4s ease-in-out infinite;
+}
+
+.hue-shift-melancholy {
+  animation: hueShiftMelancholy 6s ease-in-out infinite;
+}
+
+.hue-shift-passion {
+  animation: hueShiftPassion 3s ease-in-out infinite;
+}
+
+.hue-shift-mystery {
+  animation: hueShiftMystery 8s ease-in-out infinite;
+}
+
+.hue-shift-serenity {
+  animation: hueShiftSerenity 10s ease-in-out infinite;
+}
+
+/* ========================================
+   SATURATION BREATHING FOR EMPHASIS
+   ======================================== */
+
+/* Saturation Breathing Animations */
+@keyframes saturationBreathJoy {
+  0% { filter: saturate(1); }
+  50% { filter: saturate(1.3); }
+  100% { filter: saturate(1); }
+}
+
+@keyframes saturationBreathMelancholy {
+  0% { filter: saturate(1); }
+  50% { filter: saturate(0.8); }
+  100% { filter: saturate(1); }
+}
+
+@keyframes saturationBreathPassion {
+  0% { filter: saturate(1); }
+  50% { filter: saturate(1.5); }
+  100% { filter: saturate(1); }
+}
+
+@keyframes saturationBreathMystery {
+  0% { filter: saturate(1); }
+  25% { filter: saturate(1.2); }
+  50% { filter: saturate(0.9); }
+  75% { filter: saturate(1.1); }
+  100% { filter: saturate(1); }
+}
+
+@keyframes saturationBreathSerenity {
+  0% { filter: saturate(1); }
+  50% { filter: saturate(1.1); }
+  100% { filter: saturate(1); }
+}
+
+/* Saturation Breathing Classes */
+.saturation-breath-joy {
+  animation: saturationBreathJoy 2s ease-in-out infinite;
+}
+
+.saturation-breath-melancholy {
+  animation: saturationBreathMelancholy 4s ease-in-out infinite;
+}
+
+.saturation-breath-passion {
+  animation: saturationBreathPassion 1.5s ease-in-out infinite;
+}
+
+.saturation-breath-mystery {
+  animation: saturationBreathMystery 5s ease-in-out infinite;
+}
+
+.saturation-breath-serenity {
+  animation: saturationBreathSerenity 3s ease-in-out infinite;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Reduce animation intensity on mobile */
+  .hue-shift-joy { animation-duration: 6s; }
+  .hue-shift-melancholy { animation-duration: 8s; }
+  .hue-shift-passion { animation-duration: 4s; }
+  .hue-shift-mystery { animation-duration: 10s; }
+  .hue-shift-serenity { animation-duration: 12s; }
+  
+  /* Simplify gradients for performance */
+  .gradient-joy-mesh {
+    background: linear-gradient(135deg, var(--joy-primary) 0%, var(--joy-secondary) 100%);
+  }
+  
+  .gradient-melancholy-mesh {
+    background: linear-gradient(45deg, var(--melancholy-primary) 0%, var(--melancholy-secondary) 100%);
+  }
+  
+  .gradient-passion-mesh {
+    background: linear-gradient(90deg, var(--passion-primary) 0%, var(--passion-secondary) 100%);
+  }
+  
+  .gradient-mystery-mesh {
+    background: linear-gradient(225deg, var(--mystery-primary) 0%, var(--mystery-secondary) 100%);
+  }
+  
+  .gradient-serenity-mesh {
+    background: linear-gradient(180deg, var(--serenity-primary) 0%, var(--serenity-secondary) 100%);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Further simplify for small screens */
+  .wave-effect-joy .poem-line:nth-child(n) { transition-delay: 0.1s; }
+  .wave-effect-melancholy .poem-line:nth-child(n) { transition-delay: 0.2s; }
+  .wave-effect-passion .poem-line:nth-child(n) { transition-delay: 0.05s; }
+  .wave-effect-mystery .poem-line:nth-child(n) { transition-delay: 0.3s; }
+  .wave-effect-serenity .poem-line:nth-child(n) { transition-delay: 0.15s; }
+}
+
+/* ========================================
+   ACCESSIBILITY CONSIDERATIONS
+   ======================================== */
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --joy-primary: #B8860B;      /* Darker gold */
+    --melancholy-primary: #000080; /* Navy blue */
+    --passion-primary: #8B0000;   /* Dark red */
+    --mystery-primary: #4B0082;   /* Indigo */
+    --serenity-primary: #556B2F;  /* Dark olive */
+  }
+  
+  /* Disable complex animations */
+  .hue-shift-joy,
+  .hue-shift-melancholy,
+  .hue-shift-passion,
+  .hue-shift-mystery,
+  .hue-shift-serenity {
+    animation: none;
+  }
+  
+  .saturation-breath-joy,
+  .saturation-breath-melancholy,
+  .saturation-breath-passion,
+  .saturation-breath-mystery,
+  .saturation-breath-serenity {
+    animation: none;
+  }
+  
+  .gradient-joy-animated,
+  .gradient-melancholy-animated,
+  .gradient-passion-animated,
+  .gradient-mystery-animated,
+  .gradient-serenity-animated {
+    animation: none;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-joy-animated,
+  .gradient-melancholy-animated,
+  .gradient-passion-animated,
+  .gradient-mystery-animated,
+  .gradient-serenity-animated {
+    animation: none;
+  }
+  
+  .hue-shift-joy,
+  .hue-shift-melancholy,
+  .hue-shift-passion,
+  .hue-shift-mystery,
+  .hue-shift-serenity {
+    animation: none;
+  }
+  
+  .saturation-breath-joy,
+  .saturation-breath-melancholy,
+  .saturation-breath-passion,
+  .saturation-breath-mystery,
+  .saturation-breath-serenity {
+    animation: none;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Emotion Application Classes */
+.emotion-joy {
+  background: var(--joy-bg-primary);
+  color: var(--joy-text-primary);
+  border-color: var(--joy-border);
+}
+
+.emotion-melancholy {
+  background: var(--melancholy-bg-primary);
+  color: var(--melancholy-text-primary);
+  border-color: var(--melancholy-border);
+}
+
+.emotion-passion {
+  background: var(--passion-bg-primary);
+  color: var(--passion-text-primary);
+  border-color: var(--passion-border);
+}
+
+.emotion-mystery {
+  background: var(--mystery-bg-primary);
+  color: var(--mystery-text-primary);
+  border-color: var(--mystery-border);
+}
+
+.emotion-serenity {
+  background: var(--serenity-bg-primary);
+  color: var(--serenity-text-primary);
+  border-color: var(--serenity-border);
+}
+
+/* Gradient Application Classes */
+.bg-gradient-joy { background: var(--gradient-joy-linear); }
+.bg-gradient-melancholy { background: var(--gradient-melancholy-linear); }
+.bg-gradient-passion { background: var(--gradient-passion-linear); }
+.bg-gradient-mystery { background: var(--gradient-mystery-linear); }
+.bg-gradient-serenity { background: var(--gradient-serenity-linear); }
+
+/* Text Color Classes */
+.text-joy { color: var(--joy-primary); }
+.text-melancholy { color: var(--melancholy-primary); }
+.text-passion { color: var(--passion-primary); }
+.text-mystery { color: var(--mystery-primary); }
+.text-serenity { color: var(--serenity-primary); }
+
+/* Border Color Classes */
+.border-joy { border-color: var(--joy-primary); }
+.border-melancholy { border-color: var(--melancholy-primary); }
+.border-passion { border-color: var(--passion-primary); }
+.border-mystery { border-color: var(--mystery-primary); }
+.border-serenity { border-color: var(--serenity-primary); }

@@ -1,0 +1,491 @@
+/* Poetry Micro-Interactions CSS */
+
+/* Demo Page Styles */
+.micro-interactions-demo {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  padding: 2rem;
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.demo-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.demo-header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.demo-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.demo-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.feedback-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.word-demo {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.word-demo span {
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-demo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.poetry-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.poetry-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.poetry-card h3 {
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.poetry-card p {
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.link-demo {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.poetry-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.poetry-link:hover {
+  color: #ffd700;
+}
+
+.transition-demo {
+  margin-top: 2rem;
+}
+
+.page-content {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.control-button {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.control-button.active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Button Styles */
+.poetry-button {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.poetry-button--generate {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.poetry-button--generate:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.poetry-button--share {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+.poetry-button--save {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.poetry-button--remix {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+}
+
+.poetry-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ripple Effect */
+.ripple-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Particle Effect */
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+/* Feedback Styles */
+.poetry-feedback {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.poetry-feedback--success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.poetry-feedback--error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.poetry-feedback--loading {
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.poetry-feedback--processing {
+  background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+/* Sparkle Animation */
+.sparkle {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #4ade80, #22c55e);
+  border-radius: 50%;
+  animation: sparkle-twinkle 2s infinite;
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* Cursor Animation */
+.cursor {
+  width: 2px;
+  height: 16px;
+  background: #667eea;
+  margin-right: 4px;
+  animation: cursor-blink 1s infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Inkblot Animation */
+.inkblot {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #667eea, #764ba2);
+  border-radius: 50%;
+  animation: inkblot-pulse 2s infinite;
+}
+
+@keyframes inkblot-pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8; 
+  }
+  50% { 
+    transform: scale(1.2); 
+    opacity: 1; 
+  }
+}
+
+/* Hover Effects */
+.word-hover {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.word-hover:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.card-hover {
+  perspective: 1000px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.link-hover {
+  position: relative;
+  cursor: pointer;
+  color: #667eea;
+  text-decoration: none;
+}
+
+.link-hover .underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #667eea;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.link-hover:hover .underline {
+  transform: scaleX(1);
+}
+
+/* Image Hover Effect */
+.image-hover {
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.image-hover img {
+  transition: all 0.3s ease;
+}
+
+.image-hover:hover img {
+  transform: scale(1.05);
+  filter: blur(1px);
+}
+
+/* Transition Effects */
+.waterfall-transition {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-curl-transition {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Staggered Animations */
+.stagger-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .poetry-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .poetry-feedback {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .word-hover {
+    padding: 3px 6px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .poetry-button,
+  .word-hover,
+  .card-hover,
+  .link-hover,
+  .image-hover {
+    transition: none;
+  }
+  
+  .sparkle,
+  .cursor,
+  .inkblot {
+    animation: none;
+  }
+  
+  .ripple-effect,
+  .particle {
+    display: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .poetry-button {
+    border: 2px solid currentColor;
+  }
+  
+  .poetry-feedback {
+    border-width: 2px;
+  }
+  
+  .link-hover .underline {
+    height: 3px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .poetry-feedback--success {
+    background: linear-gradient(135deg, #1e3a1e 0%, #2d4a2d 100%);
+    color: #a8e6a8;
+    border-color: #2d4a2d;
+  }
+  
+  .poetry-feedback--error {
+    background: linear-gradient(135deg, #3a1e1e 0%, #4a2d2d 100%);
+    color: #e6a8a8;
+    border-color: #4a2d2d;
+  }
+  
+  .poetry-feedback--loading {
+    background: linear-gradient(135deg, #1e2a3a 0%, #2d3a4a 100%);
+    color: #a8c6e6;
+    border-color: #2d3a4a;
+  }
+  
+  .poetry-feedback--processing {
+    background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+    color: #e6e6e6;
+    border-color: #3a3a3a;
+  }
+}

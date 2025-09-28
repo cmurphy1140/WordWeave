@@ -1,0 +1,520 @@
+service: wordweave-backend
+
+frameworkVersion: '3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 1024  # Cost-optimized balance between performance and cost
+  timeout: 45       # Sufficient for Bedrock API calls with retries
+  
+  # Environment variables for all functions
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+    BEDROCK_MODEL_ID: anthropic.claude-3-5-sonnet-20241022
+    BEDROCK_REGION: ${self:provider.region}
+    LOG_LEVEL: ${param:logLevel, 'INFO'}
+  
+  # HTTP API configuration with CORS
+  httpApi:
+    name: wordweave-api-${self:provider.stage}
+    cors:
+      allowedOrigins:
+        - https://wordweave.app
+        - https://www.wordweave.app
+        - http://localhost:3000  # Development
+        - http://localhost:3001  # Development
+      allowedHeaders:
+        - Content-Type
+        - X-API-Key
+        - Authorization
+        - X-Amz-Date
+        - X-Api-Key
+        - X-Amz-Security-Token
+      allowedMethods:
+        - GET
+        - POST
+        - OPTIONS
+      allowCredentials: false
+      maxAge: 86400  # 24 hours preflight cache
+    
+    # API Gateway logging (simplified for deployment)
+    # logs:
+    #   format: >-
+    #     $requestId $ip $requestTime "$httpMethod $routeKey $protocol"
+    #     $status $responseLength $responseTime "$userAgent"
+    #   level: INFO
+  
+  # IAM role configuration
+  iam:
+    role:
+      name: wordweave-lambda-role-${self:provider.stage}
+      statements:
+        # Bedrock permissions
+        - Effect: Allow
+          Action:
+            - bedrock:InvokeModel
+            - bedrock:GetFoundationModel
+            - bedrock:ListFoundationModels
+          Resource:
+            - arn:aws:bedrock:${self:provider.region}:${aws:accountId}:foundation-model/anthropic.claude-*
+        
+        # DynamoDB permissions
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt PoemCacheTable.Arn
+            - !GetAtt ThemeCacheTable.Arn
+            - !Sub "${PoemCacheTable.Arn}/index/*"
+            - !Sub "${ThemeCacheTable.Arn}/index/*"
+        
+        # CloudWatch Logs permissions
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            - logs:DescribeLogGroups
+            - logs:DescribeLogStreams
+          Resource:
+            - !Sub "arn:aws:logs:${self:provider.region}:${aws:accountId}:log-group:/aws/lambda/wordweave-*"
+  
+  # Cost optimization settings
+  deploymentBucket:
+    blockPublicAccess: true
+    versioning: false  # Reduce storage costs
+    
+  # VPC configuration (optional - remove if not needed)
+  # vpc:
+  #   securityGroupIds: []
+  #   subnetIds: []
+
+# Plugin configuration
+plugins:
+  - serverless-python-requirements
+
+# Custom variables
+custom:
+  # Python requirements configuration
+  pythonRequirements:
+    dockerizePip: false  # Faster builds, works for most packages
+    slim: true          # Remove unnecessary files
+    strip: false        # Keep debugging info for now
+    
+  # Prune old versions to save storage costs (disabled for now)
+  # prune:
+  #   automatic: true
+  #   includeLayers: true
+  #   number: 3  # Keep only 3 versions
+    
+  # Resource tagging for cost tracking
+  tags:
+    Project: WordWeave
+    Environment: ${self:provider.stage}
+    Service: Backend
+    ManagedBy: Serverless
+    CostCenter: WordWeave-${self:provider.stage}
+
+# Lambda functions
+functions:
+  # Poem generation function
+  generatePoem:
+    name: wordweave-poem-generator-${self:provider.stage}
+    handler: lambda_function.lambda_handler
+    description: Generate poetry using AWS Bedrock Claude 3.5 Sonnet
+    
+    # Function-specific environment variables
+    environment:
+      DYNAMODB_TABLE_NAME: !Ref PoemCacheTable
+      CACHE_TTL: 86400  # 24 hours in seconds
+      MAX_RETRIES: 3
+      ENABLE_ANALYTICS: true
+    
+    # Cost-optimized configuration
+    memorySize: 512   # Sufficient for poem generation
+    timeout: 30       # Poem generation is faster than theme analysis
+    
+    # Reserved concurrency to control costs
+    reservedConcurrency: 10
+    
+    # HTTP API events
+    events:
+      - httpApi:
+          path: /generate
+          method: post
+    
+    # CloudWatch alarms for monitoring (configured separately)
+    # alarms:
+    #   - name: poem-generator-errors
+    #     description: Alert when poem generation errors exceed threshold
+    #     metric: errors
+    #     threshold: 10
+    #     statistic: Sum
+    #     period: 300
+    #     evaluationPeriods: 2
+    #     comparisonOperator: GreaterThanOrEqualToThreshold
+    #     treatMissingData: notBreaching
+  
+  # Theme analysis function
+  analyzeTheme:
+    name: wordweave-theme-analyzer-${self:provider.stage}
+    handler: theme_analyzer.lambda_handler
+    description: Analyze poem themes for visual parameters
+    
+    # Function-specific environment variables
+    environment:
+      DYNAMODB_TABLE_NAME: !Ref ThemeCacheTable
+      CACHE_TTL: 604800  # 7 days in seconds
+      MAX_RETRIES: 3
+      ANALYSIS_CONFIDENCE_THRESHOLD: 0.7
+    
+    # Higher resources for complex analysis
+    memorySize: 1024  # More memory for theme analysis
+    timeout: 29       # Max timeout for HTTP API (30s limit)
+    
+    # Reserved concurrency
+    reservedConcurrency: 5  # Lower concurrency as it's called less frequently
+    
+    # HTTP API events
+    events:
+      - httpApi:
+          path: /analyze
+          method: post
+    
+    # CloudWatch alarms (configured separately)
+    # alarms:
+    #   - name: theme-analyzer-errors
+    #     description: Alert when theme analysis errors exceed threshold
+    #     metric: errors
+    #     threshold: 5
+    #     statistic: Sum
+    #     period: 300
+    #     evaluationPeriods: 2
+    #     comparisonOperator: GreaterThanOrEqualToThreshold
+  
+  # Health check function (lightweight)
+  healthCheck:
+    name: wordweave-health-check-${self:provider.stage}
+    handler: health_check.lambda_handler
+    description: Health check endpoint for monitoring
+    
+    # Minimal resources for health check
+    memorySize: 128
+    timeout: 10
+    
+    environment:
+      POEM_TABLE_NAME: !Ref PoemCacheTable
+      THEME_TABLE_NAME: !Ref ThemeCacheTable
+    
+    events:
+      - httpApi:
+          path: /health
+          method: get
+      - schedule:
+          rate: rate(5 minutes)  # Keep warm to avoid cold starts
+          enabled: ${param:enableSchedule, false}
+
+# AWS Resources
+resources:
+  Resources:
+    # DynamoDB table for poem caching
+    PoemCacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: wordweave-poems-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST  # Cost-effective for variable workload
+        
+        AttributeDefinitions:
+          - AttributeName: cache_key
+            AttributeType: S
+          - AttributeName: created_at
+            AttributeType: S
+        
+        KeySchema:
+          - AttributeName: cache_key
+            KeyType: HASH
+        
+        # GSI for querying by creation time
+        GlobalSecondaryIndexes:
+          - IndexName: CreatedAtIndex
+            KeySchema:
+              - AttributeName: created_at
+                KeyType: HASH
+            Projection:
+              ProjectionType: KEYS_ONLY
+        
+        # TTL for automatic cleanup
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        
+        # Point-in-time recovery for production
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${param:enablePITR, false}
+        
+        # Server-side encryption
+        SSESpecification:
+          SSEEnabled: true
+          KMSMasterKeyId: alias/aws/dynamodb
+        
+        # Backup policy handled by PointInTimeRecoverySpecification above
+        
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        
+        Tags:
+          - Key: Project
+            Value: WordWeave
+          - Key: Environment
+            Value: ${self:provider.stage}
+          - Key: Purpose
+            Value: PoemCache
+    
+    # DynamoDB table for theme analysis caching
+    ThemeCacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: wordweave-themes-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        
+        AttributeDefinitions:
+          - AttributeName: cache_key
+            AttributeType: S
+          - AttributeName: created_at
+            AttributeType: S
+        
+        KeySchema:
+          - AttributeName: cache_key
+            KeyType: HASH
+        
+        # GSI for analytics
+        GlobalSecondaryIndexes:
+          - IndexName: CreatedAtIndex
+            KeySchema:
+              - AttributeName: created_at
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        
+        # TTL for automatic cleanup (7 days)
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        
+        # Point-in-time recovery for production
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: ${param:enablePITR, false}
+        
+        # Server-side encryption
+        SSESpecification:
+          SSEEnabled: true
+        
+        Tags:
+          - Key: Project
+            Value: WordWeave
+          - Key: Environment
+            Value: ${self:provider.stage}
+          - Key: Purpose
+            Value: ThemeCache
+    
+    # CloudWatch Log Groups with retention policies
+    PoemGeneratorLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/wordweave-poem-generator-${self:provider.stage}
+        RetentionInDays: ${param:logRetentionDays, 14}
+        KmsKeyId: !Ref LogGroupKMSKey
+    
+    ThemeAnalyzerLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/wordweave-theme-analyzer-${self:provider.stage}
+        RetentionInDays: ${param:logRetentionDays, 14}
+        KmsKeyId: !Ref LogGroupKMSKey
+    
+    HealthCheckLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/wordweave-health-check-${self:provider.stage}
+        RetentionInDays: ${param:logRetentionDays, 7}
+        KmsKeyId: !Ref LogGroupKMSKey
+    
+    # KMS key for log encryption
+    LogGroupKMSKey:
+      Type: AWS::KMS::Key
+      Properties:
+        Description: KMS key for WordWeave CloudWatch logs encryption
+        KeyPolicy:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: Enable IAM User Permissions
+              Effect: Allow
+              Principal:
+                AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+              Action: 'kms:*'
+              Resource: '*'
+            - Sid: Allow CloudWatch Logs
+              Effect: Allow
+              Principal:
+                Service: !Sub 'logs.${AWS::Region}.amazonaws.com'
+              Action:
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:ReEncrypt*
+                - kms:GenerateDataKey*
+                - kms:DescribeKey
+              Resource: '*'
+        Tags:
+          - Key: Project
+            Value: WordWeave
+          - Key: Environment
+            Value: ${self:provider.stage}
+    
+    # KMS key alias
+    LogGroupKMSKeyAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: alias/wordweave-logs-${self:provider.stage}
+        TargetKeyId: !Ref LogGroupKMSKey
+    
+    # API Gateway usage plan for rate limiting (disabled for HTTP API)
+    # WordWeaveUsagePlan:
+    #   Type: AWS::ApiGateway::UsagePlan
+    #   Properties:
+    #     UsagePlanName: wordweave-usage-plan-${self:provider.stage}
+    #     Description: Usage plan for WordWeave API
+    #     Quota:
+    #       Limit: ${param:dailyQuota, 10000}  # 10k requests per day
+    #       Period: DAY
+    #     Throttle:
+    #       BurstLimit: ${param:burstLimit, 100}
+    #       RateLimit: ${param:rateLimit, 50}
+    #     Tags:
+    #       Project: WordWeave
+    #       Environment: ${self:provider.stage}
+    
+    # CloudWatch Dashboard for monitoring
+    WordWeaveDashboard:
+      Type: AWS::CloudWatch::Dashboard
+      Properties:
+        DashboardName: WordWeave-${self:provider.stage}
+        DashboardBody: !Sub |
+          {
+            "widgets": [
+              {
+                "type": "metric",
+                "x": 0,
+                "y": 0,
+                "width": 12,
+                "height": 6,
+                "properties": {
+                  "metrics": [
+                    [ "AWS/Lambda", "Invocations", "FunctionName", "wordweave-poem-generator-${self:provider.stage}" ],
+                    [ ".", "Errors", ".", "." ],
+                    [ ".", "Duration", ".", "." ]
+                  ],
+                  "period": 300,
+                  "stat": "Sum",
+                  "region": "${AWS::Region}",
+                  "title": "Poem Generator Metrics"
+                }
+              },
+              {
+                "type": "metric",
+                "x": 12,
+                "y": 0,
+                "width": 12,
+                "height": 6,
+                "properties": {
+                  "metrics": [
+                    [ "AWS/Lambda", "Invocations", "FunctionName", "wordweave-theme-analyzer-${self:provider.stage}" ],
+                    [ ".", "Errors", ".", "." ],
+                    [ ".", "Duration", ".", "." ]
+                  ],
+                  "period": 300,
+                  "stat": "Sum",
+                  "region": "${AWS::Region}",
+                  "title": "Theme Analyzer Metrics"
+                }
+              },
+              {
+                "type": "metric",
+                "x": 0,
+                "y": 6,
+                "width": 24,
+                "height": 6,
+                "properties": {
+                  "metrics": [
+                    [ "AWS/DynamoDB", "ConsumedReadCapacityUnits", "TableName", "${PoemCacheTable}" ],
+                    [ ".", "ConsumedWriteCapacityUnits", ".", "." ],
+                    [ ".", "ConsumedReadCapacityUnits", "TableName", "${ThemeCacheTable}" ],
+                    [ ".", "ConsumedWriteCapacityUnits", ".", "." ]
+                  ],
+                  "period": 300,
+                  "stat": "Sum",
+                  "region": "${AWS::Region}",
+                  "title": "DynamoDB Capacity Units"
+                }
+              }
+            ]
+          }
+
+  # CloudFormation outputs
+  Outputs:
+    ApiGatewayHttpApiId:
+      Description: HTTP API Gateway ID
+      Value: !Ref HttpApi
+      Export:
+        Name: ${self:service}-${self:provider.stage}-HttpApiId
+    
+    ApiGatewayHttpApiUrl:
+      Description: HTTP API Gateway URL
+      Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+      Export:
+        Name: ${self:service}-${self:provider.stage}-HttpApiUrl
+    
+    PoemCacheTableName:
+      Description: DynamoDB table name for poem caching
+      Value: !Ref PoemCacheTable
+      Export:
+        Name: ${self:service}-${self:provider.stage}-PoemCacheTable
+    
+    ThemeCacheTableName:
+      Description: DynamoDB table name for theme caching
+      Value: !Ref ThemeCacheTable
+      Export:
+        Name: ${self:service}-${self:provider.stage}-ThemeCacheTable
+    
+    PoemGeneratorFunctionArn:
+      Description: Poem generator Lambda function ARN
+      Value: !GetAtt GeneratePoemLambdaFunction.Arn
+      Export:
+        Name: ${self:service}-${self:provider.stage}-PoemGeneratorArn
+    
+    ThemeAnalyzerFunctionArn:
+      Description: Theme analyzer Lambda function ARN
+      Value: !GetAtt AnalyzeThemeLambdaFunction.Arn
+      Export:
+        Name: ${self:service}-${self:provider.stage}-ThemeAnalyzerArn
+
+# Package configuration
+package:
+  patterns:
+    - '!**'
+    - 'lambda_function.py'
+    - 'theme_analyzer.py'
+    - 'health_check.py'
+    - 'requirements.txt'
+  individually: true  # Package functions individually for smaller sizes
+

@@ -1,0 +1,56 @@
+# Artillery load test configuration for WordWeave API
+# Tests poem generation and theme analysis endpoints under load
+
+config:
+  target: 'http://localhost:3003'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 10
+      name: "Ramp up load"
+    - duration: 300
+      arrivalRate: 15
+      name: "Sustained load"
+    - duration: 60
+      arrivalRate: 20
+      name: "Peak load"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+
+scenarios:
+  - name: "Poem Generation Flow"
+    weight: 70
+    flow:
+      - post:
+          url: "/api/generate"
+          json:
+            verb: "{{ $randomString() }}"
+            adjective: "{{ $randomString() }}"
+            noun: "{{ $randomString() }}"
+          capture:
+            - json: "$.poem"
+              as: "poem"
+      - post:
+          url: "/api/analyze"
+          json:
+            poem: "{{ poem }}"
+
+  - name: "Theme Analysis Only"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/analyze"
+          json:
+            poem: "The graceful butterfly dances through the morning light"
+
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/health"

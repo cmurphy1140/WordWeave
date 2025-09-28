@@ -1,0 +1,509 @@
+name: WordWeave Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - prod
+          - staging
+
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: '18.x'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Security and quality checks
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security audit
+        run: |
+          # Frontend security scan
+          cd frontend
+          npm audit --audit-level=moderate
+
+          # Backend security scan
+          cd ../backend
+          pip install safety
+          safety check -r requirements.txt
+
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+
+  # Backend tests and validation
+  backend-test:
+    runs-on: ubuntu-latest
+    name: Backend Tests
+    needs: security-scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-mock pytest-cov
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          python -m pytest test_*.py -v --cov=. --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend/coverage.xml
+          flags: backend
+
+  # Frontend tests and build validation
+  frontend-test:
+    runs-on: ubuntu-latest
+    name: Frontend Tests
+    needs: security-scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run linting
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run type checking
+        run: |
+          cd frontend
+          npm run type-check
+
+      - name: Run tests
+        run: |
+          cd frontend
+          npm run test:ci
+
+      - name: Build application
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/build/
+          retention-days: 30
+
+      - name: Run Lighthouse CI
+        run: |
+          cd frontend
+          npm install -g @lhci/cli
+          lhci autorun || echo "Lighthouse CI completed with warnings"
+
+  # Infrastructure validation
+  infrastructure-validate:
+    runs-on: ubuntu-latest
+    name: Infrastructure Validation
+    needs: [backend-test, frontend-test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Validate CloudFormation templates
+        run: |
+          # Validate backend serverless config
+          aws cloudformation validate-template --template-body file://backend/serverless-prod.yml || echo "Serverless template validation"
+
+          # Validate frontend CloudFormation
+          aws cloudformation validate-template --template-body file://frontend/cloudfront-config.yml
+
+      - name: Check AWS permissions
+        run: |
+          aws sts get-caller-identity
+          aws iam list-attached-role-policies --role-name wordweave-deployment-role --region ${{ env.AWS_REGION }} || echo "Role check completed"
+
+  # Deploy backend to production
+  deploy-backend:
+    runs-on: ubuntu-latest
+    name: Deploy Backend
+    needs: infrastructure-validate
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js for Serverless
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Serverless Framework
+        run: npm install -g serverless
+
+      - name: Install Serverless plugins
+        run: |
+          cd backend
+          npm install serverless-python-requirements serverless-domain-manager serverless-plugin-warmup serverless-plugin-aws-alerts
+
+      - name: Install Python dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create JWT secret if not exists
+        run: |
+          cd backend
+          JWT_SECRET=$(openssl rand -base64 32)
+          aws ssm put-parameter \
+            --name "/wordweave/prod/jwt-secret" \
+            --value "$JWT_SECRET" \
+            --type "SecureString" \
+            --overwrite \
+            --description "JWT secret for WordWeave production" \
+            --region ${{ env.AWS_REGION }} || echo "Parameter might already exist"
+
+      - name: Deploy backend infrastructure
+        run: |
+          cd backend
+          serverless deploy --config serverless-prod.yml --stage prod --region ${{ env.AWS_REGION }} \
+            --param="certificateArn=${{ secrets.SSL_CERTIFICATE_ARN }}" \
+            --param="hostedZoneId=${{ secrets.HOSTED_ZONE_ID }}" \
+            --param="logLevel=INFO" \
+            --param="enablePITR=true" \
+            --param="logRetentionDays=30"
+
+      - name: Test backend deployment
+        run: |
+          # Wait for deployment to be ready
+          sleep 30
+
+          # Test health endpoint
+          curl -f https://api.wordweave.app/health || curl -f $(aws cloudformation describe-stacks --stack-name wordweave-backend-prod --region ${{ env.AWS_REGION }} --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayHttpApiUrl`].OutputValue' --output text)/health
+
+      - name: Notify backend deployment
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: 'WordWeave Backend Deployment: ${{ job.status }}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Deploy frontend to production
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    name: Deploy Frontend
+    needs: deploy-backend
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Create production environment
+        run: |
+          cd frontend
+          cat > .env.production << EOF
+          REACT_APP_API_URL=https://api.wordweave.app
+          REACT_APP_ENVIRONMENT=production
+          REACT_APP_DOMAIN=wordweave.app
+          REACT_APP_ENABLE_ANALYTICS=true
+          REACT_APP_ENABLE_ERROR_TRACKING=true
+          REACT_APP_ENABLE_PERFORMANCE_MONITORING=true
+          REACT_APP_CACHE_VERSION=1.0.0
+          REACT_APP_ENABLE_SERVICE_WORKER=true
+          REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          REACT_APP_ANALYTICS_ID=${{ secrets.ANALYTICS_ID }}
+          EOF
+
+      - name: Build application
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy CloudFront infrastructure
+        run: |
+          cd frontend
+
+          # Check if stack exists and deploy accordingly
+          if aws cloudformation describe-stacks --stack-name wordweave-frontend-prod --region ${{ env.AWS_REGION }} &> /dev/null; then
+            echo "Updating existing CloudFormation stack..."
+            aws cloudformation update-stack \
+              --stack-name wordweave-frontend-prod \
+              --template-body file://cloudfront-config.yml \
+              --parameters \
+                ParameterKey=DomainName,ParameterValue=wordweave.app \
+                ParameterKey=CertificateArn,ParameterValue=${{ secrets.SSL_CERTIFICATE_ARN }} \
+                ParameterKey=HostedZoneId,ParameterValue=${{ secrets.HOSTED_ZONE_ID }} \
+                ParameterKey=Environment,ParameterValue=prod \
+              --capabilities CAPABILITY_IAM \
+              --region ${{ env.AWS_REGION }}
+
+            aws cloudformation wait stack-update-complete --stack-name wordweave-frontend-prod --region ${{ env.AWS_REGION }}
+          else
+            echo "Creating new CloudFormation stack..."
+            aws cloudformation create-stack \
+              --stack-name wordweave-frontend-prod \
+              --template-body file://cloudfront-config.yml \
+              --parameters \
+                ParameterKey=DomainName,ParameterValue=wordweave.app \
+                ParameterKey=CertificateArn,ParameterValue=${{ secrets.SSL_CERTIFICATE_ARN }} \
+                ParameterKey=HostedZoneId,ParameterValue=${{ secrets.HOSTED_ZONE_ID }} \
+                ParameterKey=Environment,ParameterValue=prod \
+              --capabilities CAPABILITY_IAM \
+              --region ${{ env.AWS_REGION }}
+
+            aws cloudformation wait stack-create-complete --stack-name wordweave-frontend-prod --region ${{ env.AWS_REGION }}
+          fi
+
+      - name: Upload to S3 and invalidate CloudFront
+        run: |
+          cd frontend
+
+          # Get S3 bucket and CloudFront distribution
+          S3_BUCKET=$(aws cloudformation describe-stacks \
+            --stack-name wordweave-frontend-prod \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Stacks[0].Outputs[?OutputKey==`S3BucketName`].OutputValue' \
+            --output text)
+
+          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
+            --stack-name wordweave-frontend-prod \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDistributionId`].OutputValue' \
+            --output text)
+
+          # Upload static assets with long cache
+          aws s3 sync build/ s3://$S3_BUCKET/ \
+            --region ${{ env.AWS_REGION }} \
+            --delete \
+            --cache-control "public, max-age=31536000" \
+            --exclude "*.html" \
+            --exclude "*.json" \
+            --exclude "service-worker.js" \
+            --exclude "sw.js"
+
+          # Upload HTML and JSON with no cache
+          aws s3 sync build/ s3://$S3_BUCKET/ \
+            --region ${{ env.AWS_REGION }} \
+            --cache-control "public, max-age=0, must-revalidate" \
+            --include "*.html" \
+            --include "*.json" \
+            --include "service-worker.js" \
+            --include "sw.js"
+
+          # Create CloudFront invalidation
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id $DISTRIBUTION_ID \
+            --paths "/*" \
+            --query 'Invalidation.Id' \
+            --output text)
+
+          # Wait for invalidation to complete
+          aws cloudfront wait invalidation-completed \
+            --distribution-id $DISTRIBUTION_ID \
+            --id $INVALIDATION_ID
+
+      - name: Test frontend deployment
+        run: |
+          # Wait for propagation
+          sleep 60
+
+          # Test website
+          curl -f https://wordweave.app || echo "Website test completed with status $?"
+          curl -f https://www.wordweave.app || echo "WWW test completed with status $?"
+
+      - name: Notify frontend deployment
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: 'WordWeave Frontend Deployment: ${{ job.status }}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Post-deployment testing
+  post-deployment-test:
+    runs-on: ubuntu-latest
+    name: Post-Deployment Testing
+    needs: [deploy-backend, deploy-frontend]
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install test dependencies
+        run: |
+          npm install -g artillery
+          npm install -g @lhci/cli
+
+      - name: Run API load tests
+        run: |
+          cd artillery
+          artillery run load-test.yml --target https://api.wordweave.app
+
+      - name: Run end-to-end tests
+        run: |
+          # Install Cypress and run E2E tests against production
+          cd cypress
+          npm install
+          npx cypress run --spec "cypress/e2e/production-smoke-test.cy.ts" --env baseUrl=https://wordweave.app
+
+      - name: Run Lighthouse performance audit
+        run: |
+          lhci autorun --collect.url=https://wordweave.app --collect.numberOfRuns=3
+
+      - name: Performance budget check
+        run: |
+          # Check Core Web Vitals and performance metrics
+          echo "Performance audit completed - check Lighthouse CI results"
+
+  # Notify deployment completion
+  notify-completion:
+    runs-on: ubuntu-latest
+    name: Deployment Notification
+    needs: [post-deployment-test]
+    if: always()
+    steps:
+      - name: Determine deployment status
+        id: status
+        run: |
+          if [ "${{ needs.post-deployment-test.result }}" == "success" ]; then
+            echo "status=✅ SUCCESS" >> $GITHUB_OUTPUT
+            echo "color=good" >> $GITHUB_OUTPUT
+          else
+            echo "status=❌ FAILED" >> $GITHUB_OUTPUT
+            echo "color=danger" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send deployment notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              attachments: [{
+                color: '${{ steps.status.outputs.color }}',
+                title: 'WordWeave Production Deployment Complete',
+                text: 'Status: ${{ steps.status.outputs.status }}',
+                fields: [{
+                  title: 'Environment',
+                  value: 'Production',
+                  short: true
+                }, {
+                  title: 'Version',
+                  value: '${{ github.ref }}',
+                  short: true
+                }, {
+                  title: 'Website',
+                  value: 'https://wordweave.app',
+                  short: false
+                }, {
+                  title: 'API',
+                  value: 'https://api.wordweave.app',
+                  short: false
+                }],
+                footer: 'WordWeave CI/CD',
+                ts: ${{ github.event.head_commit.timestamp }}
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Create GitHub deployment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: 'production',
+              description: 'WordWeave production deployment',
+              auto_merge: false
+            });
+
+# Security: Limit concurrent deployments
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false

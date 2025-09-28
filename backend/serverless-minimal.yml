@@ -1,0 +1,102 @@
+service: wordweave-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  stage: dev
+  memorySize: 512
+  timeout: 29
+  
+  # Environment variables for all functions
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+    BEDROCK_MODEL_ID: anthropic.claude-3-5-sonnet-20241022
+    BEDROCK_REGION: ${self:provider.region}
+    LOG_LEVEL: INFO
+  
+  # HTTP API configuration with CORS
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:3000
+        - http://localhost:3001
+        - https://wordweave.app
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowedMethods:
+        - GET
+        - POST
+        - OPTIONS
+      allowCredentials: false
+      maxAge: 86400
+  
+  # IAM role permissions
+  iam:
+    role:
+      statements:
+        # Bedrock permissions
+        - Effect: Allow
+          Action:
+            - bedrock:InvokeModel
+          Resource:
+            - arn:aws:bedrock:${self:provider.region}::foundation-model/anthropic.claude-*
+        
+        # CloudWatch Logs permissions
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource:
+            - arn:aws:logs:${self:provider.region}:*:*
+
+# Plugin configuration
+plugins:
+  - serverless-python-requirements
+
+# Custom variables
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    slim: true
+    strip: false
+
+# Lambda functions
+functions:
+  # Poem generation function
+  generatePoem:
+    handler: lambda_function.lambda_handler
+    description: Generate poetry using AWS Bedrock Claude 3.5 Sonnet
+    memorySize: 512
+    timeout: 29
+    events:
+      - httpApi:
+          path: /generate
+          method: post
+  
+  # Theme analysis function
+  analyzeTheme:
+    handler: theme_analyzer.lambda_handler
+    description: Analyze poem themes for visual parameters
+    memorySize: 1024
+    timeout: 29
+    events:
+      - httpApi:
+          path: /analyze
+          method: post
+  
+  # Health check function
+  healthCheck:
+    handler: health_check.lambda_handler
+    description: Health check endpoint
+    memorySize: 128
+    timeout: 10
+    events:
+      - httpApi:
+          path: /health
+          method: get

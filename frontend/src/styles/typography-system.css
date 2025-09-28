@@ -1,0 +1,817 @@
+/* VerseCanvas Sophisticated Typography System - CSS Implementation */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Fredoka:wght@300;400;500;600;700&display=swap');
+
+/* CSS Custom Properties - Base Typography Scales */
+:root {
+  /* Romantic Typography Scale (Golden Ratio 1.618) */
+  --romantic-font-family: 'Playfair Display', serif;
+  --romantic-font-weight: 400;
+  --romantic-font-style: italic;
+  
+  /* Scale: 1.618 ratio */
+  --romantic-text-xs: 0.618rem;    /* 10px */
+  --romantic-text-sm: 1rem;        /* 16px */
+  --romantic-text-base: 1.618rem;  /* 26px */
+  --romantic-text-lg: 2.618rem;    /* 42px */
+  --romantic-text-xl: 4.236rem;    /* 68px */
+  --romantic-text-2xl: 6.854rem;   /* 110px */
+  --romantic-text-3xl: 11.09rem;   /* 177px */
+  
+  /* Warm Kerning */
+  --romantic-letter-spacing: 0.05em;
+  --romantic-word-spacing: 0.1em;
+  --romantic-line-height: 1.8;
+  
+  /* Romantic Colors */
+  --romantic-text-primary: #8B4513;    /* Saddle Brown */
+  --romantic-text-secondary: #CD853F;  /* Peru */
+  --romantic-text-accent: #D2691E;     /* Chocolate */
+  --romantic-text-shadow: rgba(139, 69, 19, 0.3);
+
+  /* Mystical Typography Scale (1.5 ratio) */
+  --mystical-font-family: 'Cinzel', serif;
+  --mystical-font-weight: 400;
+  --mystical-font-style: normal;
+  
+  /* Scale: 1.5 ratio */
+  --mystical-text-xs: 0.667rem;    /* 11px */
+  --mystical-text-sm: 1rem;        /* 16px */
+  --mystical-text-base: 1.5rem;    /* 24px */
+  --mystical-text-lg: 2.25rem;     /* 36px */
+  --mystical-text-xl: 3.375rem;    /* 54px */
+  --mystical-text-2xl: 5.063rem;   /* 81px */
+  --mystical-text-3xl: 7.594rem;   /* 121px */
+  
+  /* Expanded Tracking */
+  --mystical-letter-spacing: 0.15em;
+  --mystical-word-spacing: 0.2em;
+  --mystical-line-height: 1.6;
+  
+  /* Mystical Colors */
+  --mystical-text-primary: #4B0082;    /* Indigo */
+  --mystical-text-secondary: #6A5ACD;  /* Slate Blue */
+  --mystical-text-accent: #9370DB;     /* Medium Purple */
+  --mystical-text-shadow: rgba(75, 0, 130, 0.4);
+
+  /* Modern Typography Scale (1.414 ratio) */
+  --modern-font-family: 'Inter', sans-serif;
+  --modern-font-weight: 400;
+  --modern-font-style: normal;
+  
+  /* Scale: 1.414 ratio */
+  --modern-text-xs: 0.707rem;    /* 11px */
+  --modern-text-sm: 1rem;        /* 16px */
+  --modern-text-base: 1.414rem; /* 23px */
+  --modern-text-lg: 2rem;       /* 32px */
+  --modern-text-xl: 2.828rem;   /* 45px */
+  --modern-text-2xl: 4rem;      /* 64px */
+  --modern-text-3xl: 5.657rem;  /* 90px */
+  
+  /* Tight Leading */
+  --modern-letter-spacing: -0.01em;
+  --modern-word-spacing: 0.05em;
+  --modern-line-height: 1.4;
+  
+  /* Modern Colors */
+  --modern-text-primary: #2C3E50;    /* Dark Blue Gray */
+  --modern-text-secondary: #34495E; /* Wet Asphalt */
+  --modern-text-accent: #3498DB;    /* Peter River */
+  --modern-text-shadow: rgba(44, 62, 80, 0.2);
+
+  /* Playful Typography Scale (1.333 ratio) */
+  --playful-font-family: 'Fredoka', sans-serif;
+  --playful-font-weight: 500;
+  --playful-font-style: normal;
+  
+  /* Scale: 1.333 ratio */
+  --playful-text-xs: 0.75rem;     /* 12px */
+  --playful-text-sm: 1rem;        /* 16px */
+  --playful-text-base: 1.333rem;  /* 21px */
+  --playful-text-lg: 1.778rem;    /* 28px */
+  --playful-text-xl: 2.37rem;     /* 38px */
+  --playful-text-2xl: 3.16rem;    /* 51px */
+  --playful-text-3xl: 4.21rem;    /* 67px */
+  
+  /* Bouncy Baseline */
+  --playful-letter-spacing: 0.02em;
+  --playful-word-spacing: 0.08em;
+  --playful-line-height: 1.5;
+  --playful-baseline-shift: 0.1em;
+  
+  /* Playful Colors */
+  --playful-text-primary: #E74C3C;    /* Alizarin */
+  --playful-text-secondary: #F39C12;  /* Orange */
+  --playful-text-accent: #F1C40F;     /* Sun Flower */
+  --playful-text-shadow: rgba(231, 76, 60, 0.3);
+
+  /* Common Properties */
+  --base-font-size: 1.2rem;
+  --base-letter-spacing: 0.02em;
+  --base-line-height: 1.6;
+  
+  /* WCAG Compliance Colors */
+  --text-primary-aa: #2C3E50;    /* AA Compliance - 4.5:1 ratio */
+  --text-secondary-aa: #34495E;  /* Sufficient contrast */
+  --text-primary-aaa: #1A252F;   /* AAA Compliance - 7:1 ratio */
+  --text-secondary-aaa: #2C3E50;  /* Higher contrast */
+}
+
+/* Typography Scale Classes */
+.typography-romantic {
+  font-family: var(--romantic-font-family);
+  font-weight: var(--romantic-font-weight);
+  font-style: var(--romantic-font-style);
+  letter-spacing: var(--romantic-letter-spacing);
+  word-spacing: var(--romantic-word-spacing);
+  line-height: var(--romantic-line-height);
+  color: var(--romantic-text-primary);
+}
+
+.typography-mystical {
+  font-family: var(--mystical-font-family);
+  font-weight: var(--mystical-font-weight);
+  font-style: var(--mystical-font-style);
+  letter-spacing: var(--mystical-letter-spacing);
+  word-spacing: var(--mystical-word-spacing);
+  line-height: var(--mystical-line-height);
+  color: var(--mystical-text-primary);
+}
+
+.typography-modern {
+  font-family: var(--modern-font-family);
+  font-weight: var(--modern-font-weight);
+  font-style: var(--modern-font-style);
+  letter-spacing: var(--modern-letter-spacing);
+  word-spacing: var(--modern-word-spacing);
+  line-height: var(--modern-line-height);
+  color: var(--modern-text-primary);
+}
+
+.typography-playful {
+  font-family: var(--playful-font-family);
+  font-weight: var(--playful-font-weight);
+  font-style: var(--playful-font-style);
+  letter-spacing: var(--playful-letter-spacing);
+  word-spacing: var(--playful-word-spacing);
+  line-height: var(--playful-line-height);
+  color: var(--playful-text-primary);
+  transform: translateY(var(--playful-baseline-shift));
+}
+
+/* Dynamic Text Treatments */
+.poem-line {
+  font-size: var(--base-font-size);
+  line-height: var(--base-line-height);
+  letter-spacing: var(--base-letter-spacing);
+  transition: all 0.4s ease-out;
+  margin-bottom: 0.5rem;
+}
+
+/* Line Height Breathing with Poem Rhythm */
+.poem-line.rhythm-fast {
+  line-height: 1.2;
+  animation: quickBreath 0.8s ease-in-out infinite alternate;
+}
+
+.poem-line.rhythm-medium {
+  line-height: 1.6;
+  animation: steadyBreath 1.2s ease-in-out infinite alternate;
+}
+
+.poem-line.rhythm-slow {
+  line-height: 2.0;
+  animation: slowBreath 2.0s ease-in-out infinite alternate;
+}
+
+@keyframes quickBreath {
+  0% { line-height: 1.2; }
+  100% { line-height: 1.4; }
+}
+
+@keyframes steadyBreath {
+  0% { line-height: 1.6; }
+  100% { line-height: 1.8; }
+}
+
+@keyframes slowBreath {
+  0% { line-height: 2.0; }
+  100% { line-height: 2.2; }
+}
+
+/* Font Size Emphasizing Emotional Peaks */
+.poem-line.emotion-low {
+  font-size: calc(var(--base-font-size) * 0.9);
+  opacity: 0.8;
+}
+
+.poem-line.emotion-medium {
+  font-size: var(--base-font-size);
+  opacity: 1;
+}
+
+.poem-line.emotion-high {
+  font-size: calc(var(--base-font-size) * 1.2);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.poem-line.emotion-peak {
+  font-size: calc(var(--base-font-size) * 1.4);
+  font-weight: 700;
+  animation: emotionalPulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes emotionalPulse {
+  0% { 
+    transform: scale(1);
+    text-shadow: 0 0 0 currentColor;
+  }
+  100% { 
+    transform: scale(1.05);
+    text-shadow: 0 0 20px currentColor;
+  }
+}
+
+/* Letter Spacing for Contemplative Sections */
+.poem-line.contemplative {
+  letter-spacing: calc(var(--base-letter-spacing) * 2);
+  animation: contemplativeDrift 3s ease-in-out infinite alternate;
+}
+
+.poem-line.urgent {
+  letter-spacing: calc(var(--base-letter-spacing) * 0.5);
+  animation: urgentPulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes contemplativeDrift {
+  0% { letter-spacing: calc(var(--base-letter-spacing) * 2); }
+  100% { letter-spacing: calc(var(--base-letter-spacing) * 2.5); }
+}
+
+@keyframes urgentPulse {
+  0% { letter-spacing: calc(var(--base-letter-spacing) * 0.5); }
+  100% { letter-spacing: calc(var(--base-letter-spacing) * 0.3); }
+}
+
+/* Text Shadows for Dramatic Moments */
+.poem-line.dramatic {
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  animation: dramaticGlow 2s ease-in-out infinite alternate;
+}
+
+.poem-line.mystical-shadow {
+  text-shadow: 
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 30px currentColor;
+  animation: mysticalAura 3s ease-in-out infinite alternate;
+}
+
+@keyframes dramaticGlow {
+  0% { 
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  100% { 
+    text-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.4),
+      0 8px 16px rgba(0, 0, 0, 0.3),
+      0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@keyframes mysticalAura {
+  0% { 
+    text-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor;
+  }
+  100% { 
+    text-shadow: 
+      0 0 20px currentColor,
+      0 0 40px currentColor,
+      0 0 60px currentColor;
+  }
+}
+
+/* Layout Variations */
+
+/* 1. Haiku Layout - Centered, Massive Whitespace */
+.poem-layout-haiku {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.poem-layout-haiku .poem-line {
+  font-size: var(--haiku-font-size, 2rem);
+  line-height: 2.5;
+  margin: 2rem 0;
+  max-width: 20ch;
+}
+
+.poem-layout-haiku .poem-line:nth-child(1) {
+  font-size: calc(var(--haiku-font-size, 2rem) * 1.1);
+  margin-top: 0;
+}
+
+.poem-layout-haiku .poem-line:nth-child(3) {
+  font-size: calc(var(--haiku-font-size, 2rem) * 0.9);
+  margin-bottom: 0;
+}
+
+.poem-layout-haiku::before,
+.poem-layout-haiku::after {
+  content: '';
+  flex: 1;
+  min-height: 4rem;
+}
+
+/* 2. Narrative Layout - Book-like, Justified, Drop Caps */
+.poem-layout-narrative {
+  max-width: 65ch;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: justify;
+  column-count: 1;
+}
+
+.poem-layout-narrative .poem-line {
+  font-size: var(--narrative-font-size, 1.2rem);
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+  text-indent: 0;
+}
+
+.poem-layout-narrative .poem-line:first-child {
+  font-size: calc(var(--narrative-font-size, 1.2rem) * 3);
+  float: left;
+  line-height: 0.8;
+  margin: 0 0.5rem 0 0;
+  padding: 0;
+  text-indent: 0;
+}
+
+.poem-layout-narrative .poem-line:first-child::first-letter {
+  font-size: calc(var(--narrative-font-size, 1.2rem) * 4);
+  line-height: 0.8;
+  float: left;
+  margin: 0 0.2rem 0 0;
+  padding: 0;
+  font-weight: 700;
+}
+
+.poem-layout-narrative .poem-line {
+  hanging-punctuation: first last;
+}
+
+/* 3. Experimental Layout - Concrete Poetry Shapes */
+.poem-layout-experimental {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.poem-layout-experimental .poem-line {
+  font-size: var(--experimental-font-size, 1.5rem);
+  line-height: 1.4;
+  padding: 1rem;
+  border-radius: 50%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.poem-layout-experimental .poem-line:hover {
+  transform: scale(1.1) rotate(5deg);
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+}
+
+.poem-layout-experimental .poem-line:nth-child(odd) {
+  transform: rotate(-2deg);
+}
+
+.poem-layout-experimental .poem-line:nth-child(even) {
+  transform: rotate(2deg);
+}
+
+.poem-layout-experimental .poem-line.shape-circle {
+  border-radius: 50%;
+}
+
+.poem-layout-experimental .poem-line.shape-square {
+  border-radius: 0;
+}
+
+.poem-layout-experimental .poem-line.shape-hexagon {
+  border-radius: 0;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
+}
+
+/* 4. Classic Layout - Elegant Margins, Hanging Punctuation */
+.poem-layout-classic {
+  max-width: 50ch;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  text-align: left;
+}
+
+.poem-layout-classic .poem-line {
+  font-size: var(--classic-font-size, 1.3rem);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  text-indent: -1ch;
+  padding-left: 1ch;
+}
+
+.poem-layout-classic {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.poem-layout-classic .poem-line {
+  hanging-punctuation: first last;
+}
+
+.poem-layout-classic .poem-line::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+}
+
+.poem-layout-classic .poem-line {
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Reading Enhancements */
+
+/* 1. Bionic Reading Option */
+.bionic-reading {
+  font-weight: normal;
+}
+
+.bionic-reading .bionic-bold {
+  font-weight: 700;
+  color: var(--bionic-color, #2C3E50);
+}
+
+.bionic-reading .poem-line {
+  font-weight: normal;
+}
+
+.bionic-reading .poem-line::first-letter {
+  font-weight: 700;
+}
+
+.bionic-reading .word-long::first-letter {
+  font-weight: 700;
+}
+
+.bionic-reading .word-long::nth-letter(2) {
+  font-weight: 700;
+}
+
+.bionic-reading-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bionic-reading-toggle:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+}
+
+/* 2. Focus Mode - Highlight Current Line */
+.focus-mode {
+  position: relative;
+}
+
+.focus-mode .poem-line {
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.focus-mode .poem-line.focused {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  animation: focusPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes focusPulse {
+  0% { 
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3);
+  }
+  100% { 
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+}
+
+.focus-mode .reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+}
+
+.focus-mode .reading-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3498DB, #2ECC71);
+  transition: width 0.3s ease;
+}
+
+/* 3. Pace Indicator - Reading Time Visualization */
+.pace-indicator {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  z-index: 1000;
+}
+
+.pace-indicator .reading-time {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.pace-indicator .reading-speed {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.pace-indicator .pace-visualization {
+  width: 100px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.pace-indicator .pace-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #E74C3C, #F39C12, #2ECC71);
+  transition: width 0.5s ease;
+}
+
+.pace-indicator.slow .pace-bar {
+  background: #E74C3C;
+}
+
+.pace-indicator.medium .pace-bar {
+  background: #F39C12;
+}
+
+.pace-indicator.fast .pace-bar {
+  background: #2ECC71;
+}
+
+/* 4. Annotation System for Favorite Lines */
+.annotation-system {
+  position: relative;
+}
+
+.annotation-system .poem-line {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.annotation-system .poem-line:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.annotation-system .poem-line.annotated {
+  background: rgba(255, 215, 0, 0.1);
+  border-left: 3px solid #FFD700;
+  padding-left: 0.5rem;
+}
+
+.annotation-system .poem-line.annotated::after {
+  content: '★';
+  color: #FFD700;
+  margin-left: 0.5rem;
+  font-size: 0.8em;
+}
+
+.annotation-panel {
+  position: fixed;
+  right: -300px;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 2rem 1rem;
+}
+
+.annotation-panel.open {
+  right: 0;
+}
+
+.annotation-panel .annotation-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #FFD700;
+}
+
+.annotation-panel .annotation-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.annotation-panel .annotation-note {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  :root {
+    --romantic-text-base: 1.2rem;
+    --romantic-text-lg: 1.8rem;
+    --romantic-text-xl: 2.5rem;
+    
+    --mystical-text-base: 1.1rem;
+    --mystical-text-lg: 1.6rem;
+    --mystical-text-xl: 2.2rem;
+    
+    --modern-text-base: 1.1rem;
+    --modern-text-lg: 1.5rem;
+    --modern-text-xl: 2rem;
+    
+    --playful-text-base: 1rem;
+    --playful-text-lg: 1.3rem;
+    --playful-text-xl: 1.7rem;
+  }
+  
+  .poem-line {
+    line-height: 1.6;
+  }
+  
+  .poem-line.emotion-peak {
+    animation: none;
+    transform: scale(1.1);
+  }
+  
+  .poem-layout-experimental {
+    grid-template-columns: 1fr;
+  }
+  
+  .poem-layout-experimental .poem-line {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --romantic-text-base: 1rem;
+    --romantic-text-lg: 1.4rem;
+    --romantic-text-xl: 1.8rem;
+    
+    --mystical-text-base: 0.9rem;
+    --mystical-text-lg: 1.3rem;
+    --mystical-text-xl: 1.7rem;
+    
+    --modern-text-base: 0.9rem;
+    --modern-text-lg: 1.2rem;
+    --modern-text-xl: 1.6rem;
+    
+    --playful-text-base: 0.8rem;
+    --playful-text-lg: 1.1rem;
+    --playful-text-xl: 1.4rem;
+  }
+  
+  .annotation-panel {
+    width: 100vw;
+    right: -100vw;
+  }
+  
+  .pace-indicator {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* WCAG Compliance */
+@media (prefers-contrast: high) {
+  :root {
+    --romantic-text-primary: #000000;
+    --mystical-text-primary: #000000;
+    --modern-text-primary: #000000;
+    --playful-text-primary: #000000;
+  }
+  
+  .poem-line {
+    text-shadow: none;
+    background: transparent;
+  }
+  
+  .poem-line.annotated {
+    background: #FFFF00;
+    color: #000000;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poem-line {
+    animation: none;
+    transition: none;
+  }
+  
+  .poem-line.emotion-peak {
+    animation: none;
+    transform: none;
+  }
+  
+  .poem-line.dramatic {
+    animation: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .poem-line.mystical-shadow {
+    animation: none;
+    text-shadow: 0 0 10px currentColor;
+  }
+  
+  .focus-mode .poem-line.focused {
+    animation: none;
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Screen Reader Support */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+.poem-line:focus {
+  outline: 2px solid #3498DB;
+  outline-offset: 2px;
+}
+
+.decorative-element {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,189 @@
+/* PoemInput styles inspired by The Dial */
+
+.poem-input-container {
+  width: 100%;
+}
+
+/* Inspiration Section */
+.inspiration-section {
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.inspiration-section h4 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+}
+
+.inspiration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-sm);
+}
+
+.inspiration-item {
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: left;
+}
+
+.inspiration-item:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-medium);
+}
+
+.inspiration-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}
+
+/* Form */
+.poem-form {
+  width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+/* Input Wrapper */
+.input-wrapper {
+  position: relative;
+}
+
+.form-input.input-error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.error-message {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font-size: var(--text-xs);
+  color: #dc2626;
+  margin-top: var(--space-xs);
+}
+
+/* Suggestions Dropdown */
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  margin-top: var(--space-xs);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+}
+
+.suggestion-item:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.suggestion-category {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.suggestion-poetic .suggestion-category {
+  color: #7c3aed;
+}
+
+.suggestion-creative .suggestion-category {
+  color: #059669;
+}
+
+.suggestion-common .suggestion-category {
+  color: var(--color-text-muted);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* Error Display */
+.error-display {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .inspiration-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .inspiration-section {
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+  }
+  
+  .form-grid {
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .form-actions {
+    padding-top: var(--space-md);
+  }
+}

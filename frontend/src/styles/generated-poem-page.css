@@ -1,0 +1,304 @@
+/* Generated Poem Page Styles - Inspired by The Dial */
+
+.generated-poem-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Header */
+.poem-page-header {
+  padding: 2rem 0 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 3rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e5e5;
+  background-color: transparent;
+  color: #1a1a1a;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.back-button:hover {
+  background-color: #f5f5f5;
+  border-color: #1a1a1a;
+}
+
+.header-title h1 {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button:hover {
+  background-color: #f5f5f5;
+}
+
+.action-button.liked {
+  color: #e74c3c;
+}
+
+.action-button.bookmarked {
+  color: #f39c12;
+}
+
+/* Main Content */
+.poem-page-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Poem Display Section */
+.poem-display-section {
+  width: 100%;
+}
+
+.poem-content {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #1a1a1a;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Actions Section */
+.poem-actions-section {
+  width: 100%;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem;
+  border: 1px solid #e5e5e5;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #1a1a1a;
+}
+
+.action-card:hover {
+  background-color: #f9f9f9;
+  border-color: #1a1a1a;
+  transform: translateY(-2px);
+}
+
+.action-card span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Theme Analysis Section */
+.theme-analysis-section {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e5e5;
+  background-color: transparent;
+  color: #666;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.toggle-button:hover {
+  background-color: #f5f5f5;
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+.metadata-content {
+  background-color: #fafafa;
+  padding: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metadata-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metadata-label {
+  font-size: 0.8rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metadata-value {
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.keywords-section {
+  margin-top: 1.5rem;
+}
+
+.keywords-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.keywords-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword-tag {
+  padding: 0.25rem 0.75rem;
+  background-color: #e5e5e5;
+  color: #1a1a1a;
+  font-size: 0.8rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.keyword-tag:hover {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+/* Footer */
+.poem-page-footer {
+  padding: 2rem 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .generated-poem-page {
+    padding: 0 1.5rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    align-self: flex-end;
+  }
+  
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .metadata-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .poem-content {
+    font-size: 1rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .generated-poem-page {
+    padding: 0 1rem;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metadata-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-card {
+    padding: 1rem;
+  }
+}

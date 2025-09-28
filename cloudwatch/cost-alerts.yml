@@ -1,0 +1,142 @@
+# CloudWatch Cost Alerts for WordWeave AWS Services
+# Monitors costs for Lambda, DynamoDB, Bedrock, and other services
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'WordWeave Cost Monitoring and Alerts'
+
+Resources:
+  # SNS Topic for cost alerts
+  CostAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: wordweave-cost-alerts
+      DisplayName: WordWeave Cost Alerts
+      Subscription:
+        - Protocol: email
+          Endpoint: team@wordweave.app
+        - Protocol: email
+          Endpoint: finance@wordweave.app
+
+  # Lambda Cost Alarm
+  LambdaCostAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: wordweave-lambda-cost-alert
+      AlarmDescription: 'Alert when Lambda costs exceed threshold'
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      Period: 86400  # 24 hours
+      EvaluationPeriods: 1
+      Threshold: 50  # $50 per day
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Currency
+          Value: USD
+        - Name: ServiceName
+          Value: AWSLambda
+      AlarmActions:
+        - Ref: CostAlertsTopic
+
+  # DynamoDB Cost Alarm
+  DynamoDBCostAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: wordweave-dynamodb-cost-alert
+      AlarmDescription: 'Alert when DynamoDB costs exceed threshold'
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 30  # $30 per day
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Currency
+          Value: USD
+        - Name: ServiceName
+          Value: AmazonDynamoDB
+      AlarmActions:
+        - Ref: CostAlertsTopic
+
+  # Bedrock Cost Alarm
+  BedrockCostAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: wordweave-bedrock-cost-alert
+      AlarmDescription: 'Alert when Bedrock costs exceed threshold'
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 100  # $100 per day
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Currency
+          Value: USD
+        - Name: ServiceName
+          Value: AmazonBedrock
+      AlarmActions:
+        - Ref: CostAlertsTopic
+
+  # Total AWS Cost Alarm
+  TotalCostAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: wordweave-total-cost-alert
+      AlarmDescription: 'Alert when total AWS costs exceed threshold'
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 200  # $200 per day
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Currency
+          Value: USD
+      AlarmActions:
+        - Ref: CostAlertsTopic
+
+  # Monthly Cost Budget
+  MonthlyCostBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: wordweave-monthly-budget
+        BudgetLimit:
+          Amount: 1000  # $1000 per month
+          Unit: USD
+        TimeUnit: MONTHLY
+        BudgetType: COST
+        CostFilters:
+          Service:
+            - Amazon DynamoDB
+            - AWS Lambda
+            - Amazon Bedrock
+            - Amazon CloudWatch
+        NotificationsWithSubscribers:
+          - Notification:
+              NotificationType: ACTUAL
+              ComparisonOperator: GREATER_THAN
+              Threshold: 80  # Alert at 80% of budget
+              ThresholdType: PERCENTAGE
+            Subscribers:
+              - SubscriptionType: EMAIL
+                Address: team@wordweave.app
+          - Notification:
+              NotificationType: FORECASTED
+              ComparisonOperator: GREATER_THAN
+              Threshold: 100  # Alert if forecasted to exceed budget
+              ThresholdType: PERCENTAGE
+            Subscribers:
+              - SubscriptionType: EMAIL
+                Address: finance@wordweave.app
+
+Outputs:
+  CostAlertsTopicArn:
+    Description: 'ARN of the SNS topic for cost alerts'
+    Value: !Ref CostAlertsTopic
+    Export:
+      Name: wordweave-cost-alerts-topic

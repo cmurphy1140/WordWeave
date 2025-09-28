@@ -1,0 +1,323 @@
+/* Layout Manager Styles */
+.layout-manager {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.layout-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--theme-primary, #ffffff);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.layout-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.layout-button.active {
+  background: var(--theme-primary, #6366f1);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.layout-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.layout-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.layout-indicator {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.indicator-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.indicator-dot.active {
+  background: var(--theme-primary, #6366f1);
+}
+
+/* Centered Layout Styles */
+.centered-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.centered-container {
+  max-width: 800px;
+  text-align: center;
+}
+
+.centered-line {
+  color: var(--theme-primary, #ffffff);
+  font-family: 'Playfair Display', serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Book Layout Styles */
+.book-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(90deg, 
+    rgba(139, 69, 19, 0.1) 0%, 
+    rgba(139, 69, 19, 0.05) 20%, 
+    transparent 50%, 
+    rgba(139, 69, 19, 0.05) 80%, 
+    rgba(139, 69, 19, 0.1) 100%
+  );
+}
+
+.book-container {
+  width: 100%;
+  max-width: 800px;
+}
+
+.book-page {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.book-margin-left,
+.book-margin-right {
+  width: 60px;
+  border-right: 2px solid rgba(139, 69, 19, 0.3);
+}
+
+.book-content {
+  flex: 1;
+  padding: 0 1rem;
+}
+
+.book-line {
+  color: var(--theme-primary, #ffffff);
+  font-family: 'Playfair Display', serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Spiral Layout Styles */
+.spiral-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: radial-gradient(circle at center, 
+    rgba(99, 102, 241, 0.1) 0%, 
+    transparent 70%
+  );
+}
+
+.spiral-container {
+  position: relative;
+  width: 800px;
+  height: 600px;
+}
+
+.spiral-line {
+  color: var(--theme-primary, #ffffff);
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Scattered Layout Styles */
+.scattered-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+}
+
+.scattered-container {
+  position: relative;
+  width: 800px;
+  height: 600px;
+}
+
+.scattered-line {
+  color: var(--theme-primary, #ffffff);
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .layout-controls {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .layout-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .centered-layout,
+  .book-layout,
+  .spiral-layout,
+  .scattered-layout {
+    padding: 1rem;
+  }
+  
+  .book-page {
+    padding: 1rem;
+  }
+  
+  .book-margin-left,
+  .book-margin-right {
+    width: 30px;
+  }
+  
+  .spiral-container,
+  .scattered-container {
+    width: 100%;
+    height: 400px;
+  }
+  
+  .centered-line,
+  .book-line {
+    font-size: 1rem;
+  }
+  
+  .spiral-line,
+  .scattered-line {
+    font-size: 0.8rem;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-controls {
+    padding: 0.25rem;
+  }
+  
+  .layout-button {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+  }
+  
+  .spiral-container,
+  .scattered-container {
+    height: 300px;
+  }
+  
+  .spiral-line,
+  .scattered-line {
+    max-width: 120px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Animation Enhancements */
+.layout-manager * {
+  will-change: transform, opacity;
+}
+
+/* Focus states for accessibility */
+.layout-button:focus {
+  outline: 2px solid var(--theme-accent, #f59e0b);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .layout-button {
+    border: 2px solid currentColor;
+  }
+  
+  .layout-button.active {
+    border-color: white;
+  }
+  
+  .centered-line,
+  .book-line,
+  .spiral-line,
+  .scattered-line {
+    text-shadow: 0 0 0 currentColor;
+    font-weight: 600;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .layout-manager *,
+  .layout-manager *::before,
+  .layout-manager *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .layout-container {
+    cursor: default;
+  }
+}
