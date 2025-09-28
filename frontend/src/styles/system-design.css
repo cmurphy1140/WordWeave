@@ -15,31 +15,100 @@
 /* Hero Section */
 .hero-section {
   text-align: center;
-  padding: 120px 20px 80px;
+  padding: 140px 20px 100px;
   background: linear-gradient(135deg, 
-    rgba(99, 102, 241, 0.1) 0%, 
-    rgba(168, 85, 247, 0.1) 100%
+    rgba(99, 102, 241, 0.08) 0%, 
+    rgba(168, 85, 247, 0.12) 50%,
+    rgba(236, 72, 153, 0.08) 100%
   );
-  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  border-bottom: 1px solid var(--color-border, rgba(226, 232, 240, 0.8));
+  position: relative;
+  overflow: hidden;
 }
 
-.hero-section h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(99, 102, 241, 0.05) 0%, 
+    transparent 70%
+  );
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-icon {
+  margin: 0 auto 32px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 24px;
+  color: white;
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.25);
+}
+
+.hero-title {
+  font-size: clamp(2.75rem, 5vw, 4.5rem);
   font-weight: 800;
-  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  background: linear-gradient(135deg, #1e293b, #475569, #334155);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0 0 20px;
+  margin: 0 0 24px;
   line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-.hero-section p {
-  font-size: 1.25rem;
+.hero-subtitle {
+  font-size: 1.375rem;
   color: var(--color-text-secondary, #64748b);
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 650px;
+  margin: 0 auto 40px;
   line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4c1d95;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 /* Architecture Section */
@@ -85,34 +154,46 @@
 
 .component-marker {
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   pointer-events: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   border: 3px solid white;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translate(-50%, -50%);
+  backdrop-filter: blur(8px);
 }
 
 .component-marker:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border-width: 4px;
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .component-marker.active {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   border-width: 4px;
   border-color: #fbbf24;
+  transform: translate(-50%, -50%) scale(1.15);
 }
 
 .component-icon {
-  font-size: 20px;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  font-size: 24px;
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  width: 24px;
+  height: 24px;
+}
+
+.component-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 2.5;
 }
 
 .component-details {
@@ -142,6 +223,15 @@
   font-size: 32px;
   flex-shrink: 0;
   margin-top: 4px;
+  color: #6366f1;
+  width: 32px;
+  height: 32px;
+}
+
+.component-icon-large svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.5;
 }
 
 .component-header h3 {

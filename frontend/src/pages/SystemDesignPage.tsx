@@ -2,11 +2,69 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/system-design.css';
 
+// SVG Icons for Architecture Components
+const FrontendIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+    <line x1="8" y1="21" x2="16" y2="21"/>
+    <line x1="12" y1="17" x2="12" y2="21"/>
+    <path d="M7 11h10v4H7z"/>
+  </svg>
+);
+
+const ApiGatewayIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+
+const LambdaIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+);
+
+const DatabaseIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+    <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+    <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+  </svg>
+);
+
+const CdnIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <polygon points="10 8 16 12 10 16 10 8"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+
+const AiIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 2a3 3 0 0 0-3 3c0 1.5 1.2 3 3 3s3-1.5 3-3a3 3 0 0 0-3-3"/>
+    <path d="M19 11v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6"/>
+    <path d="M12 8v13"/>
+    <path d="M8 21h8"/>
+    <circle cx="9" cy="11" r="1"/>
+    <circle cx="15" cy="11" r="1"/>
+  </svg>
+);
+
+const CacheIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+    <line x1="4" y1="22" x2="4" y2="15"/>
+    <line x1="20" y1="22" x2="20" y2="15"/>
+  </svg>
+);
+
 interface ArchitectureComponent {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   details: string[];
   position: { x: number; y: number };
@@ -21,7 +79,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'frontend',
       title: 'React Frontend + Motion',
       description: 'Beautiful, animated user interface built with React and Framer Motion',
-      icon: '🎨',
+      icon: <FrontendIcon />,
       color: '#61dafb',
       details: [
         'TypeScript for type-safe development',
@@ -36,7 +94,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'api-gateway',
       title: 'Amazon API Gateway',
       description: 'Secure entry point managing all API requests with throttling and monitoring',
-      icon: '🚪',
+      icon: <ApiGatewayIcon />,
       color: '#ff9900',
       details: [
         'Request routing to Lambda functions',
@@ -51,7 +109,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'lambda',
       title: 'Lambda Function',
       description: 'Serverless compute handling business logic and AI orchestration',
-      icon: '⚡',
+      icon: <LambdaIcon />,
       color: '#ff9900',
       details: [
         'Poetry generation logic',
@@ -66,7 +124,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'dynamodb',
       title: 'DynamoDB (Cache)',
       description: 'High-performance NoSQL database for intelligent poem caching',
-      icon: '💾',
+      icon: <DatabaseIcon />,
       color: '#3f48cc',
       details: [
         'Sub-millisecond response times',
@@ -81,7 +139,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'cloudfront',
       title: 'CloudFront CDN',
       description: 'Global content delivery network ensuring fast loading worldwide',
-      icon: '🌐',
+      icon: <CdnIcon />,
       color: '#232f3e',
       details: [
         '400+ global edge locations',
@@ -96,7 +154,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'bedrock',
       title: 'Bedrock (Claude)',
       description: 'AI foundation model powering creative poetry generation',
-      icon: '🧠',
+      icon: <AiIcon />,
       color: '#00a86b',
       details: [
         'Claude 3.5 Sonnet model',
@@ -111,7 +169,7 @@ const SystemDesignPage: React.FC = () => {
       id: 'redis',
       title: 'ElastiCache (Redis)',
       description: 'In-memory caching for ultra-fast session management',
-      icon: '🔄',
+      icon: <CacheIcon />,
       color: '#dc382d',
       details: [
         'Session storage',
@@ -152,8 +210,49 @@ const SystemDesignPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1>WordWeave System Design</h1>
-        <p>Discover the sophisticated architecture powering AI-driven poetry creation</p>
+        <div className="hero-content">
+          <motion.div 
+            className="hero-icon"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.3, duration: 0.6, ease: "backOut" }}
+          >
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M12 2L2 7v10c0 5.55 3.84 9.95 9 11 5.16-1.05 9-5.45 9-11V7l-10-5z"/>
+              <path d="M9 12l2 2 4-4"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.2"/>
+            </svg>
+          </motion.div>
+          
+          <motion.h1 
+            className="hero-title"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            WordWeave System Architecture
+          </motion.h1>
+          
+          <motion.p 
+            className="hero-subtitle"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
+            Discover the sophisticated cloud-native architecture powering AI-driven poetry creation
+          </motion.p>
+          
+          <motion.div 
+            className="hero-badges"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
+            <span className="badge">Serverless</span>
+            <span className="badge">AI-Powered</span>
+            <span className="badge">Scalable</span>
+          </motion.div>
+        </div>
       </motion.section>
 
       {/* Architecture Diagram */}
@@ -232,9 +331,19 @@ const SystemDesignPage: React.FC = () => {
           )}
         </AnimatePresence>
 
-        <p className="interaction-hint">
-          💡 Click on any component in the diagram to learn more about its role
-        </p>
+        <motion.p 
+          className="interaction-hint"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline-block', marginRight: '8px' }}>
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Click on any component in the diagram to learn more about its role
+        </motion.p>
       </motion.section>
 
       {/* Data Flow Section */}
