@@ -18,6 +18,24 @@ The moonlight dances on the leaves,
 While autumn gently breathes and grieves,
 Each moment holds a secret story,
 Written in twilight's fading glory.`,
+    theme: {
+      colors: {
+        primary: '#4c1d95',
+        secondary: '#7c3aed',
+        accent: '#a855f7',
+        background: '#faf5ff',
+        gradient: ['#4c1d95', '#7c3aed', '#a855f7']
+      },
+      animations: {
+        style: 'mystical',
+        duration: 1000,
+        stagger: 100
+      },
+      typography: {
+        mood: 'elegant',
+        scale: 1.2
+      }
+    },
     metadata: {
       id: 'demo-poem-1',
       wordCount: 45,
@@ -41,6 +59,17 @@ Written in twilight's fading glory.`,
           lineHeight: 1.8,
           letterSpacing: 'normal'
         },
+        animations: {
+          duration: 1000,
+          easing: 'ease-out',
+          stagger: 100,
+          style: 'fade'
+        },
+        layout: {
+          style: 'centered',
+          alignment: 'center',
+          spacing: 'comfortable'
+        },
         effects: {
           blur: false,
           glow: true,
@@ -48,9 +77,28 @@ Written in twilight's fading glory.`,
           gradient: true
         }
       },
-      themes: ['nature', 'mystery', 'twilight'],
-      emotions: ['contemplative', 'mystical', 'serene'],
-      confidence: 0.92
+      themes: ['nature', 'mystery', 'twilight'], // Top-level themes for easy access
+      themeAnalysis: {
+        emotional_tone: {
+          primary: 'mystical',
+          secondary: 'serene',
+          intensity: 'medium',
+          scores: { mystical: 0.8, serene: 0.7, contemplative: 0.6 }
+        },
+        themes: ['nature', 'mystery', 'twilight'],
+        literary_devices: ['imagery', 'metaphor', 'alliteration'],
+        word_analysis: {
+          original: { verb: 'dance', adjective: 'silver', noun: 'moonlight' },
+          enhanced: { verb: 'glides', adjective: 'ethereal', noun: 'luminescence' },
+          transformation_quality: 'moderate'
+        }
+      },
+      poetryMetrics: {
+        readabilityScore: 0.85,
+        emotionalImpact: 0.9,
+        creativityIndex: 0.88,
+        coherenceScore: 0.92
+      }
     }
   };
 

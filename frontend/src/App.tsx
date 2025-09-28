@@ -5,6 +5,7 @@ import { HomePage, AnimationShowcasePage, PipelineTestPage, GeneratedPoemPage } 
 import TypographyDemo from './pages/TypographyDemo';
 import ColorSystemPage from './pages/ColorSystemPage';
 import Navigation from './components/Navigation';
+import LearningCurveApp from './components/LearningCurveApp';
 import MinimalistApp from './components/MinimalistApp';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -13,6 +14,11 @@ import { registerServiceWorker, swManager } from './utils/serviceWorker';
 import { initializePerformanceMonitoring } from './utils/performance';
 import { useCacheWarming } from './hooks/useApiQueries';
 import { preloadAnimationComponents } from './components/LazyAnimationComponents';
+import './styles/learning-curve-theme.css';
+import './styles/learning-curve-components.css';
+import './styles/learning-curve-app.css';
+import './styles/learning-curve-input.css';
+import './styles/learning-curve-display.css';
 import './styles/dial-inspired.css';
 import './styles/app-dial.css';
 import './styles/poem-generator.css';
@@ -79,8 +85,11 @@ const AppContent: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Main minimalist app */}
-        <Route path="/" element={<MinimalistApp />} />
+        {/* Main Learning Curve app */}
+        <Route path="/" element={<LearningCurveApp />} />
+
+        {/* Alternative minimalist app */}
+        <Route path="/minimalist" element={<MinimalistApp />} />
         
         {/* Legacy routes for development/testing */}
         <Route path="/legacy" element={

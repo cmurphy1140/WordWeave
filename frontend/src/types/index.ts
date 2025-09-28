@@ -4,6 +4,7 @@ export interface WordInputs {
   verb: string;
   adjective: string;
   noun: string;
+  words?: string[]; // Optional array of input words
 }
 
 export interface Theme {
@@ -31,6 +32,9 @@ export interface PoemMetadata {
   sentiment: string;
   emotion: string;
   generationTime: number;
+  words?: string[]; // Source words used for generation
+  style?: string; // Poetry style (e.g., 'Free Verse', 'Haiku')
+  mood?: string; // Mood of the poem
 }
 
 export interface PoemData {
@@ -41,6 +45,7 @@ export interface PoemData {
 }
 
 export interface PoemAnalysis {
+  themes?: string[]; // Top-level themes array for easy access
   themeAnalysis: {
     emotional_tone: {
       primary: string;

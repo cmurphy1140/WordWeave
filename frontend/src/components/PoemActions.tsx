@@ -8,6 +8,7 @@ interface PoemActionsProps {
   onSave?: () => void;
   onShare?: () => void;
   onRegenerate?: () => void;
+  onEdit?: () => void;
   className?: string;
 }
 
@@ -23,6 +24,7 @@ const PoemActions: React.FC<PoemActionsProps> = ({
   onSave, 
   onShare, 
   onRegenerate,
+  onEdit,
   className = '' 
 }) => {
   const [state, setState] = useState<ActionState>({

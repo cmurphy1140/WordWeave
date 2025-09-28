@@ -24,7 +24,9 @@ const MinimalistApp: React.FC = () => {
   // Handle poem generation
   const handleGeneratePoem = async (words: string[]) => {
     try {
-      await generatePoem({ words });
+      // Convert words array to WordInputs format
+      const [verb = '', adjective = '', noun = ''] = words;
+      await generatePoem({ verb, adjective, noun, words });
     } catch (error) {
       console.error('Failed to generate poem:', error);
     }

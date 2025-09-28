@@ -268,7 +268,7 @@ const MinimalistPoemDisplay: React.FC<MinimalistPoemDisplayProps> = ({
               justifyContent: 'center'
             }}
           >
-            {poemData.analysis.themes.slice(0, 3).map((theme) => (
+            {(poemData.analysis?.themes || poemData.analysis?.themeAnalysis?.themes || []).slice(0, 3).map((theme: string) => (
               <span
                 key={theme}
                 style={{

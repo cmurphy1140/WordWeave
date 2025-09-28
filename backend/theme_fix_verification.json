@@ -1,0 +1,99 @@
+{
+  "statusCode": 200,
+  "success": true,
+  "data": {
+    "poem": "A test poem with magical words\nDancing through mystical moonlight",
+    "analysis": {
+      "themeAnalysis": {
+        "emotional_tone": {
+          "primary": "neutral",
+          "secondary": "reflective",
+          "intensity": "medium",
+          "scores": {
+            "neutral": 0.8,
+            "reflective": 0.6
+          }
+        },
+        "themes": ["contemplative"],
+        "literary_devices": [],
+        "word_analysis": {
+          "original": {
+            "verb": "test",
+            "adjective": "simple",
+            "noun": "word"
+          },
+          "enhanced": {
+            "verb": "test",
+            "adjective": "simple",
+            "noun": "word"
+          },
+          "transformation_quality": "moderate"
+        }
+      },
+      "visualRecommendations": {
+        "colors": {
+          "primary": "#6b7280",
+          "secondary": "#9ca3af",
+          "accent": "#d1d5db",
+          "background": "#f3f4f6",
+          "gradient": ["#6b7280", "#9ca3af"]
+        },
+        "typography": {
+          "fontFamily": "sans-serif",
+          "fontWeight": "400",
+          "letterSpacing": "normal",
+          "lineHeight": 1.6,
+          "fontSize": "medium"
+        },
+        "animations": {
+          "duration": 2000,
+          "easing": "ease-out",
+          "stagger": 150,
+          "style": "calm"
+        },
+        "layout": {
+          "style": "centered",
+          "alignment": "left",
+          "spacing": "normal"
+        },
+        "effects": {
+          "blur": false,
+          "glow": false,
+          "shadow": false,
+          "gradient": false
+        }
+      },
+      "poetryMetrics": {
+        "readabilityScore": 0.85,
+        "emotionalImpact": 0.5,
+        "creativityIndex": 0.75,
+        "coherenceScore": 0.9
+      }
+    },
+    "theme": {
+      "colors": {
+        "primary": "#6b7280",
+        "secondary": "#9ca3af",
+        "accent": "#d1d5db",
+        "background": "#f3f4f6",
+        "gradient": ["#6b7280", "#9ca3af"]
+      },
+      "animations": {
+        "style": "calm",
+        "duration": 2000,
+        "stagger": 150
+      },
+      "typography": {
+        "mood": "modern",
+        "scale": 1.0
+      }
+    },
+    "metadata": {
+      "id": "poem-1759063915-f0fa822f",
+      "wordCount": 10,
+      "sentiment": "neutral",
+      "emotion": "neutral",
+      "generationTime": 1.5
+    }
+  }
+}

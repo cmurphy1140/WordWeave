@@ -1,0 +1,338 @@
+/* Learning Curve Poem Input Component */
+
+.poem-input-container {
+  width: 100%;
+  max-width: var(--content-normal);
+  margin: 0 auto;
+}
+
+.poem-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* Instructions */
+.form-instructions {
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+/* Word Inputs Grid */
+.word-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.word-input-group {
+  position: relative;
+}
+
+/* Enhanced Form Labels */
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.label-text {
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.label-description {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: var(--font-regular);
+}
+
+/* Input Wrapper */
+.input-wrapper {
+  position: relative;
+}
+
+.word-input {
+  width: 100%;
+  text-align: center;
+  font-weight: var(--font-medium);
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.word-input:focus {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-focus), var(--shadow-lg);
+}
+
+.word-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Suggestions Dropdown */
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  margin-top: var(--space-1);
+
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+
+  text-align: left;
+  font-size: var(--text-body-sm);
+}
+
+.suggestion-item:hover {
+  background: var(--surface-secondary);
+}
+
+.suggestion-item:active {
+  background: var(--surface-tertiary);
+}
+
+.suggestion-word {
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.suggestion-category {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: var(--font-regular);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.generate-button {
+  min-width: 160px;
+  position: relative;
+}
+
+.generate-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: var(--radius-full);
+  animation: spin 0.8s linear infinite;
+}
+
+/* Examples Section */
+.examples-section {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-light);
+}
+
+.examples-toggle {
+  display: block;
+  width: 100%;
+  padding: var(--space-3);
+  margin-bottom: var(--space-6);
+
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+
+  font-size: var(--text-body-sm);
+  text-align: center;
+}
+
+.examples-toggle:hover {
+  color: var(--text-secondary);
+}
+
+.examples-content {
+  overflow: hidden;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-6);
+}
+
+.example-category h4 {
+  margin-bottom: var(--space-3);
+}
+
+.example-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.example-word {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  border: none;
+}
+
+.example-word:hover {
+  background: var(--surface-tertiary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.example-word:active {
+  transform: translateY(0);
+}
+
+/* Enhanced Focus Management */
+.word-input:focus-within {
+  outline: none;
+}
+
+.word-input:focus-within + .suggestions-dropdown {
+  border-color: var(--accent);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .word-inputs-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .generate-button {
+    width: 100%;
+    order: -1;
+  }
+
+  .examples-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .word-input {
+    font-size: 1rem; /* Prevent zoom on iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  .poem-form {
+    gap: var(--space-6);
+  }
+
+  .word-inputs-grid {
+    gap: var(--space-4);
+  }
+
+  .form-actions {
+    gap: var(--space-2);
+  }
+
+  .generate-button {
+    min-width: unset;
+  }
+
+  .examples-section {
+    margin-top: var(--space-6);
+  }
+}
+
+/* Animation Enhancements */
+@media (prefers-reduced-motion: no-preference) {
+  .word-input {
+    transition: all var(--transition-spring);
+  }
+
+  .example-word {
+    transition: all var(--transition-spring);
+  }
+
+  .suggestion-item {
+    transition: all var(--transition-spring);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .word-input {
+    border-width: 2px;
+  }
+
+  .suggestions-dropdown {
+    border-width: 2px;
+  }
+
+  .example-word {
+    border-width: 2px;
+  }
+}
+
+/* Dark Theme Adjustments */
+.dark-theme .suggestions-dropdown {
+  background: var(--surface-card);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-xl);
+}
+
+.dark-theme .suggestion-item:hover {
+  background: var(--surface-tertiary);
+}
+
+.dark-theme .example-word {
+  background: var(--surface-tertiary);
+  border-color: var(--border-medium);
+}
+
+.dark-theme .example-word:hover {
+  background: var(--surface-secondary);
+}

@@ -1,0 +1,7 @@
+{
+  "Variables": {
+    "BEDROCK_MODEL_ID": "anthropic.claude-3-5-haiku-20241022",
+    "BEDROCK_REGION": "us-east-1",
+    "LOG_LEVEL": "INFO"
+  }
+}

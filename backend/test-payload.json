@@ -1,0 +1,4 @@
+{
+  "httpMethod": "POST",
+  "body": "{\"verb\":\"whisper\",\"adjective\":\"ethereal\",\"noun\":\"forest\"}"
+}
