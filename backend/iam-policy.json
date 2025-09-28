@@ -10,7 +10,7 @@
                 "bedrock:ListFoundationModels"
             ],
             "Resource": [
-                "arn:aws:bedrock:*:*:foundation-model/anthropic.claude-3-5-sonnet-*"
+                "arn:aws:bedrock:*:*:foundation-model/anthropic.claude-3-5-haiku-*"
             ]
         },
         {

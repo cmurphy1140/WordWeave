@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { HomePage, AnimationShowcasePage, PipelineTestPage, GeneratedPoemPage } from './pages';
+import { HomePage, AnimationShowcasePage, PipelineTestPage, GeneratedPoemPage, SystemDesignPage } from './pages';
 import TypographyDemo from './pages/TypographyDemo';
 import ColorSystemPage from './pages/ColorSystemPage';
 import Navigation from './components/Navigation';
@@ -27,6 +27,7 @@ import './styles/typography-system.css';
 import './styles/color-system.css';
 import './styles/poetry-micro-interactions.css';
 import './styles/design-system.css';
+import './styles/system-design.css';
 import './App.css';
 
 const App: React.FC = () => {
@@ -117,6 +118,7 @@ const AppContent: React.FC = () => {
         <Route path="/generated-poem" element={<GeneratedPoemPage />} />
         <Route path="/typography-demo" element={<TypographyDemo />} />
         <Route path="/color-system" element={<ColorSystemPage />} />
+        <Route path="/system-design" element={<SystemDesignPage />} />
       </Routes>
     </Router>
     );

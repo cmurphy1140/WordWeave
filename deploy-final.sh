@@ -99,7 +99,7 @@ echo -e "${YELLOW}⚡ Creating Lambda function...${NC}"
 cat > env-vars.json << 'EOF'
 {
   "Variables": {
-    "BEDROCK_MODEL_ID": "anthropic.claude-3-5-sonnet-20241022",
+    "BEDROCK_MODEL_ID": "anthropic.claude-3-5-haiku-20241022-v1:0",
     "BEDROCK_REGION": "us-east-1",
     "LOG_LEVEL": "INFO"
   }

@@ -14,7 +14,7 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     REGION: ${self:provider.region}
-    BEDROCK_MODEL_ID: anthropic.claude-3-5-sonnet-20241022
+    BEDROCK_MODEL_ID: anthropic.claude-3-5-haiku-20241022-v1:0
     BEDROCK_REGION: ${self:provider.region}
     LOG_LEVEL: INFO
   
